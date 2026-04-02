@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { Check, Copy } from 'lucide-react'
 import { useClipboard } from '../../hooks/useClipboard'
@@ -12,7 +12,6 @@ interface ColorSwatchProps {
 export default function ColorSwatch({ color, index }: ColorSwatchProps) {
   const { copy, copiedValue } = useClipboard()
   const ref = useRef<HTMLDivElement>(null)
-  const [isHovered, setIsHovered] = useState(false)
 
   // 3D Tilt Setup
   const x = useMotionValue(0)
@@ -40,7 +39,6 @@ export default function ColorSwatch({ color, index }: ColorSwatchProps) {
   const handleMouseLeave = () => {
     x.set(0)
     y.set(0)
-    setIsHovered(false)
   }
 
   const values = [
@@ -69,7 +67,6 @@ export default function ColorSwatch({ color, index }: ColorSwatchProps) {
       <motion.div
         ref={ref}
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
         className="glass-card rounded-2xl overflow-hidden h-full flex flex-col cursor-crosshair"
@@ -128,7 +125,7 @@ export default function ColorSwatch({ color, index }: ColorSwatchProps) {
 
           {/* Copyable Values */}
           <div className="space-y-2 mt-auto">
-            {values.map((v, i) => (
+            {values.map((v) => (
               <motion.button
                 key={v.label}
                 onClick={() => copy(v.value)}

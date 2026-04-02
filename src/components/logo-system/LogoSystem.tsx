@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from 'react'
-import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { useRef, useState } from 'react'
+import { motion, useInView, useMotionValue, useSpring } from 'framer-motion'
 import { Check, X, AlertTriangle, Download } from 'lucide-react'
 import SectionWrapper from '../layout/SectionWrapper'
 import AlignedLogo from '../hero/AlignedLogo'

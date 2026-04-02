@@ -59,18 +59,6 @@ const typeScale = [
   },
 ]
 
-const weights = [
-  { weight: 100, name: 'Thin' },
-  { weight: 200, name: 'ExtraLight' },
-  { weight: 300, name: 'Light' },
-  { weight: 400, name: 'Regular' },
-  { weight: 500, name: 'Medium' },
-  { weight: 600, name: 'SemiBold' },
-  { weight: 700, name: 'Bold' },
-  { weight: 800, name: 'ExtraBold' },
-  { weight: 900, name: 'Black' },
-]
-
 export default function Typography() {
   const [testText, setTestText] = useState('Alignment is the solution.')
   const [testWeight, setTestWeight] = useState(600)
