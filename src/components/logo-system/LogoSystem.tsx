@@ -125,7 +125,7 @@ export default function LogoSystem() {
       id="logo-system"
       kicker="01 — Logo System"
       title="The Aligned Mark"
-      subtitle="Three curves. One intersection. Infinite alignment. The mark represents the convergence of people, process, and technology."
+      subtitle="The Aligned Technology Partners logo communicates structure, trust, movement, and partnership. The mark represents the convergence of people, process, and technology."
     >
       <div ref={ref}>
         {/* Primary Mark Display */}

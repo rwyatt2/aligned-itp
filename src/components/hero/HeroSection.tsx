@@ -126,7 +126,7 @@ export default function HeroSection() {
             className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-10 mt-6"
             style={{ color: 'var(--text-primary)', lineHeight: 1.1 }}
           >
-            Alignment is <span className="drop-shadow-lg">the solution</span>
+            Alignment that <span className="drop-shadow-lg">drives growth</span>
             <span style={{ color: 'var(--accent)' }}>.</span>
           </motion.h2>
 
@@ -138,9 +138,9 @@ export default function HeroSection() {
             className="text-lg md:text-xl max-w-2xl mx-auto mb-16 font-medium"
             style={{ color: 'var(--text-primary)' }}
           >
-            Connecting people, process, and technology into one working system.
+            Aligning people, process, and technology to help your business operate better.
             <br />
-            <strong className="mt-2 block" style={{ color: 'var(--text-primary)' }}>Protect. Optimize. Advance.</strong>
+            <strong className="mt-2 block font-mono uppercase tracking-[0.1em] text-xs" style={{ color: 'var(--text-secondary)' }}>Protect • Optimize • Advance</strong>
           </motion.p>
         </motion.div>
 

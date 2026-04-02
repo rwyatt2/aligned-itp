@@ -8,7 +8,7 @@ export default function ColorPalette() {
       id="color-palette"
       kicker="02 — Color Palette"
       title="Engineered for Impact"
-      subtitle="Eight meticulously selected colors. Each chosen for its role in creating contrast, hierarchy, and emotional resonance. Click any value to copy."
+      subtitle="Eight meticulously selected colors. Engineered to communicate trust, clarity, sophistication, and momentum. Click any flex value to copy."
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {brandColors.map((color, i) => (

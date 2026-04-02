@@ -69,7 +69,7 @@ export default function Typography() {
       id="typography"
       kicker="03 — Typography"
       title="Geist — The Voice of Precision"
-      subtitle="Geist by Vercel. A typeface engineered for interfaces, optimized for readability, and calibrated for every screen."
+      subtitle="Geist by Vercel. A clean, modern sans-serif engineered to feel sophisticated, readable, and business-ready rather than overly geometric."
     >
       <div className="space-y-16">
         
@@ -195,7 +195,7 @@ export default function Typography() {
           >
             <span className="kicker mb-6 block drop-shadow-sm">Geist Sans — Body</span>
             <p className="text-base leading-relaxed mb-6 font-medium text-[var(--text-primary)]">
-              We believe that misalignment between people, process, and technology is the root cause of inefficiency, risk, and stagnation. Our mission is to engineer alignment — creating systems where every layer works together.
+              Aligned Technology Partners is a strategic growth partner that helps organizations operate better and grow stronger by aligning people, process, and technology. Rather than treating technology as an isolated support function, we help businesses use it as a driver of operational efficiency, security, clarity, and progress.
             </p>
             <div className="h-px w-full bg-gradient-to-r from-[var(--border-secondary)] to-transparent my-4" />
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
@@ -217,17 +217,17 @@ export default function Typography() {
                 Used for hex codes, data labels, specifications, and technical callouts. Creates clear visual distinction from editorial content.
               </p>
               <div className="space-y-3">
-                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
-                  <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#DB5227' }} />
-                  <span className="text-[10px] md:text-xs tracking-wider" style={{ color: 'var(--text-primary)' }}>#DB5227 — Kinetic Orange</span>
+                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner transition-colors hover:border-[var(--border-primary)]">
+                  <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#E95D2C' }} />
+                  <span className="text-[10px] md:text-xs font-medium tracking-wider" style={{ color: 'var(--text-primary)' }}>#E95D2C — Kinetic Orange</span>
                 </div>
-                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
-                  <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#023661' }} />
-                  <span className="text-[10px] md:text-xs tracking-wider" style={{ color: 'var(--text-primary)' }}>#023661 — Industrial Blue</span>
+                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner transition-colors hover:border-[var(--border-primary)]">
+                  <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#1A2730' }} />
+                  <span className="text-[10px] md:text-xs font-medium tracking-wider" style={{ color: 'var(--text-primary)' }}>#1A2730 — Midnight Navy</span>
                 </div>
-                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
-                  <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#0A0C12' }} />
-                  <span className="text-[10px] md:text-xs tracking-wider" style={{ color: 'var(--text-primary)' }}>#0A0C12 — Void Black</span>
+                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner transition-colors hover:border-[var(--border-primary)]">
+                  <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#090A0F' }} />
+                  <span className="text-[10px] md:text-xs font-medium tracking-wider" style={{ color: 'var(--text-primary)' }}>#090A0F — Abyss Black</span>
                 </div>
               </div>
             </div>

@@ -12,7 +12,12 @@ const sections = [
   { id: 'voice-tone', label: 'Voice' },
 ]
 
-export default function Navbar() {
+interface NavbarProps {
+  currentView?: 'guidelines' | 'landing'
+  onViewChange?: (view: 'guidelines' | 'landing') => void
+}
+
+export default function Navbar({ currentView = 'guidelines', onViewChange }: NavbarProps) {
   const { theme, toggleTheme } = useTheme()
   const [activeSection, setActiveSection] = useState('hero')
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -71,7 +76,7 @@ export default function Navbar() {
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-1 px-4">
-              {sections.slice(1).map((section) => (
+              {currentView === 'guidelines' && sections.slice(1).map((section) => (
                 <button
                   key={section.id}
                   onClick={() => scrollTo(section.id)}
@@ -96,6 +101,19 @@ export default function Navbar() {
 
             {/* Right Controls */}
             <div className="flex items-center gap-2 pr-1">
+              {/* View Toggle */}
+              {onViewChange && (
+                <button
+                  onClick={() => onViewChange(currentView === 'guidelines' ? 'landing' : 'guidelines')}
+                  className="px-3 md:px-4 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] md:border-transparent md:hover:border-[var(--border-secondary)]"
+                  style={{ color: currentView === 'landing' ? 'var(--accent)' : 'var(--text-secondary)' }}
+                >
+                  <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-mono)' }}>
+                    {currentView === 'guidelines' ? 'Client View' : 'Guidelines'}
+                  </span>
+                </button>
+              )}
+
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
@@ -141,7 +159,7 @@ export default function Navbar() {
             className="fixed inset-x-0 top-24 z-40 px-4 md:hidden"
           >
             <div className="glass-panel rounded-2xl p-4 shadow-xl">
-              {sections.map((section) => (
+              {currentView === 'guidelines' && sections.map((section) => (
                 <button
                   key={section.id}
                   onClick={() => scrollTo(section.id)}

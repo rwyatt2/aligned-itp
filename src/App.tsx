@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Lenis from 'lenis'
 import Navbar from './components/layout/Navbar'
@@ -8,10 +8,11 @@ import ColorPalette from './components/color-palette/ColorPalette'
 import Typography from './components/typography/Typography'
 import VisualLanguage from './components/visual-language/VisualLanguage'
 import VoiceTone from './components/voice-tone/VoiceTone'
+import ClientLanding from './pages/ClientLanding'
 
 function AnimatedDivider() {
   return (
-    <div className="flex justify-center py-8 relative -z-10 overflow-hidden">
+    <div className="flex justify-center py-4 md:py-6 relative -z-10 overflow-hidden">
       <motion.div
         initial={{ scaleX: 0, opacity: 0 }}
         whileInView={{ scaleX: 1, opacity: 1 }}
@@ -38,6 +39,16 @@ function AnimatedDivider() {
 }
 
 export default function App() {
+  const [currentView, setCurrentView] = useState<'guidelines' | 'landing'>(() => {
+    return new URLSearchParams(window.location.search).get('view') === 'landing' ? 'landing' : 'guidelines'
+  })
+
+  const handleViewChange = (view: 'guidelines' | 'landing') => {
+    setCurrentView(view)
+    window.history.pushState({}, '', view === 'landing' ? '?view=landing' : '/')
+    window.scrollTo(0, 0)
+  }
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -63,25 +74,26 @@ export default function App() {
 
   return (
     <div className="relative font-sans text-base antialiased selection:bg-[var(--accent)] selection:text-white">
-      <Navbar />
+      <Navbar currentView={currentView} onViewChange={handleViewChange} />
 
       <main className="relative z-0">
-        <HeroSection />
-
-        <AnimatedDivider />
-        <LogoSystem />
-
-        <AnimatedDivider />
-        <ColorPalette />
-
-        <AnimatedDivider />
-        <Typography />
-
-        <AnimatedDivider />
-        <VisualLanguage />
-
-        <AnimatedDivider />
-        <VoiceTone />
+        {currentView === 'guidelines' ? (
+          <>
+            <HeroSection />
+            <AnimatedDivider />
+            <LogoSystem />
+            <AnimatedDivider />
+            <ColorPalette />
+            <AnimatedDivider />
+            <Typography />
+            <AnimatedDivider />
+            <VisualLanguage />
+            <AnimatedDivider />
+            <VoiceTone />
+          </>
+        ) : (
+          <ClientLanding />
+        )}
       </main>
 
       {/* Footer */}

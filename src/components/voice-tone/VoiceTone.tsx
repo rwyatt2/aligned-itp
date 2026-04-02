@@ -7,23 +7,23 @@ const archetypes = [
     icon: BookOpen,
     name: 'The Sage',
     role: 'Understanding',
-    description: 'We see what others miss. Deep expertise enables us to diagnose root causes, not symptoms. We bring clarity to complexity.',
-    traits: ['Analytical', 'Knowledgeable', 'Thoughtful', 'Insightful'],
+    description: 'We seek truth, clarity, understanding, and wise decision-making. We approach business and technology with insight, perspective, strategic thinking, and a desire to replace confusion with clarity.',
+    traits: ['Thoughtful', 'Informed', 'Disciplined', 'Grounded'],
     color: 'var(--color-industrial)',
   },
   {
     icon: Compass,
     name: 'The Guide',
-    role: 'Movement',
-    description: 'We don\'t just advise — we walk alongside. We lead clients through transformation with a clear path from where they are to where they need to be.',
-    traits: ['Directional', 'Supportive', 'Empowering', 'Forward-looking'],
+    role: 'Confidence',
+    description: 'We help others move from uncertainty to confidence. We are not a distant expert speaking down to clients, but a trusted partner helping them navigate complexity and move toward stronger outcomes.',
+    traits: ['Trusted', 'Practical', 'Calm', 'Supportive'],
     color: 'var(--accent)',
   },
   {
     icon: Crown,
     name: 'The Ruler',
     role: 'Structure',
-    description: 'We bring order to chaos. Governance, frameworks, and standards that create predictable, excellent outcomes at scale.',
+    description: 'We bring order, structure, stability, responsibility, and control. This gives our brand strength and authority. We reflect a commitment to discipline and reliable systems.',
     traits: ['Authoritative', 'Structured', 'Precise', 'Dependable'],
     color: 'var(--color-cool-gray)',
   },
@@ -31,22 +31,40 @@ const archetypes = [
 
 const messagingPillars = [
   {
-    pillar: 'Protect',
-    headline: 'Security isn\'t a feature. It\'s the foundation.',
-    body: 'Every system we build starts with protection. From identity management to zero-trust architecture, we create environments where confidence comes standard.',
-    mono: 'PROTECT',
+    pillar: 'Alignment',
+    headline: 'Alignment that drives growth.',
+    body: 'People, process, and technology must be aligned to serve the mission. Real progress happens when systems, workflows, and teams work together in ways that support how the organization actually operates.',
+    mono: 'ALIGNMENT',
   },
   {
-    pillar: 'Optimize',
-    headline: 'Speed is a strategy. Efficiency is an advantage.',
-    body: 'We eliminate the friction that slows you down. Streamlined processes, unified tooling, and intelligent automation that turns complexity into capability.',
-    mono: 'OPTIMIZE',
+    pillar: 'Protection',
+    headline: 'Protect what matters most.',
+    body: 'Every strong business needs a secure and reliable foundation. We reduce risk, protect critical systems, and create trust in the infrastructure you depend on.',
+    mono: 'PROTECTION',
   },
   {
-    pillar: 'Advance',
-    headline: 'Growth that compounds. Progress that lasts.',
-    body: 'Strategic technology initiatives that don\'t just solve today\'s problems but position you for tomorrow\'s opportunities. We build for endurance.',
-    mono: 'ADVANCE',
+    pillar: 'Optimization',
+    headline: 'Optimize how you operate.',
+    body: 'Technology should make the business work better. We focus on reducing friction, improving workflows, increasing efficiency, and helping you get more value from the systems you already rely on.',
+    mono: 'OPTIMIZATION',
+  },
+  {
+    pillar: 'Advancement',
+    headline: 'Advance with confidence.',
+    body: 'Technology should create momentum. We help clients make better decisions, strengthen operations, and use technology more intentionally to support growth.',
+    mono: 'ADVANCEMENT',
+  },
+  {
+    pillar: 'Partnership',
+    headline: 'Strategic growth partnership.',
+    body: 'The best outcomes come through long-term partnership, not transactional support. We work alongside leadership as a trusted advisor, helping clients navigate complexity.',
+    mono: 'PARTNERSHIP',
+  },
+  {
+    pillar: 'Business Outcomes',
+    headline: 'Better-operating businesses.',
+    body: 'We keep the conversation focused on outcomes, not tools. Our message is not about features or jargon—it is about efficiency, resilience, clarity, growth, and business performance.',
+    mono: 'OUTCOMES',
   },
 ]
 
@@ -176,10 +194,10 @@ export default function VoiceTone() {
           </h3>
           <div className="flex flex-col gap-16 md:gap-20">
             {[
-              { left: 'Technical', right: 'Approachable', position: 35 },
-              { left: 'Authoritative', right: 'Collaborative', position: 40 },
-              { left: 'Precise', right: 'Conversational', position: 30 },
-              { left: 'Formal', right: 'Casual', position: 25 },
+              { left: 'Wise', right: 'Flashy', position: 20 },
+              { left: 'Confident', right: 'Arrogant', position: 15 },
+              { left: 'Structured', right: 'Rigid', position: 35 },
+              { left: 'Strategic', right: 'Abstract', position: 25 },
             ].map((spectrum, i) => (
               <div key={i} className="group cursor-default">
                 {/* Labels above the track with flex spacing */}
@@ -262,19 +280,19 @@ export default function VoiceTone() {
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Headline</p>
                   <p className="text-3xl font-extrabold tracking-tight leading-tight" style={{ color: 'var(--text-primary)' }}>
-                    Your systems should work <span className="text-gradient">as hard as your people.</span>
+                    Alignment that <span className="text-gradient">drives growth.</span>
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Body Text</p>
                   <p className="text-base font-medium leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                    We engineer alignment between your people, processes, and technology — eliminating the gaps that create risk and slow growth.
+                    We help organizations move from reactive, inefficient technology environments to aligned, secure, optimized, growth-enabled systems.
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Call To Action</p>
                   <p className="text-base font-bold bg-[var(--bg-tertiary)] py-3 px-6 rounded-lg inline-flex items-center gap-3 transition-colors hover:bg-[var(--bg-secondary)]" style={{ color: 'var(--accent)' }}>
-                    Start the alignment <span className="text-xl leading-none">→</span>
+                    What business problem can we help you solve? <span className="text-xl leading-none">→</span>
                   </p>
                 </div>
               </div>
@@ -299,19 +317,19 @@ export default function VoiceTone() {
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Headline</p>
                   <p className="text-3xl font-bold tracking-tight leading-tight" style={{ color: 'var(--text-primary)', textDecoration: 'line-through' }}>
-                    We're the best IT company around!
+                    We fix your IT issues fast.
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Body Text</p>
                   <p className="text-base font-medium leading-relaxed" style={{ color: 'var(--text-secondary)', textDecoration: 'line-through' }}>
-                    Our cutting-edge, best-in-class solutions leverage synergies to deliver world-class results for your enterprise.
+                    Our dedicated IT help desk manages all your devices, vendors, and products. We operate a rapid break/fix model to keep systems online.
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Call To Action</p>
                   <p className="text-base font-bold underline underline-offset-4" style={{ color: '#ef4444', textDecoration: 'line-through' }}>
-                    Click here to learn more!!!
+                    Submit a support ticket
                   </p>
                 </div>
               </div>
