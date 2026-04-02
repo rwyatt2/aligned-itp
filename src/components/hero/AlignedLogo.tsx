@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 interface AlignedLogoProps {
   className?: string
   size?: number
-  animated?: boolean
+  animated?: boolean | 'scroll' | 'breathing' | 'draw' | 'converge'
   color?: string
 }
 
@@ -32,6 +32,114 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
     )
   }
 
+  if (animated === 'breathing') {
+    return (
+      <div key="logo-breathing" className={className}>
+        <motion.svg
+          viewBox="0 0 56 48"
+          width={size}
+          height={size}
+          className="w-full h-auto max-w-full"
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <motion.path 
+            d={pathD} 
+            fill={color} 
+          />
+        </motion.svg>
+      </div>
+    )
+  }
+
+  if (animated === 'converge') {
+    return (
+      <div key="logo-converge" className={className}>
+        <motion.svg
+          viewBox="0 0 56 48"
+          width={size}
+          height={size}
+          className="w-full h-auto max-w-full overflow-visible drop-shadow-xl"
+        >
+          {/* Bottom Ring (People) */}
+          <motion.circle 
+            r="45.89" fill="none" stroke={color} strokeWidth="1.5"
+            initial={{ cx: 27.02, cy: 110, opacity: 0, scale: 1.1, transformOrigin: '50% 50%' }}
+            animate={{ 
+               cx: [27.02, 27.02, 27.02, 27.02], 
+               cy: [110, 68.11, 68.11, 68.11], 
+               opacity: [0, 0.4, 0.4, 0],
+               scale: [1.1, 1, 1, 1]
+            }}
+            transition={{ duration: 4.5, times: [0, 0.35, 0.7, 1], ease: ["easeInOut", "linear", "easeInOut"] }}
+          />
+          {/* Top Left Ring (Process) */}
+          <motion.circle 
+            r="45.89" fill="none" stroke={color} strokeWidth="1.5"
+            initial={{ cx: -50, cy: -20, opacity: 0, scale: 1.1, transformOrigin: '50% 50%' }}
+            animate={{ 
+               cx: [-50, -10.04, -10.04, -10.04], 
+               cy: [-20, 3.89, 3.89, 3.89], 
+               opacity: [0, 0.4, 0.4, 0],
+               scale: [1.1, 1, 1, 1]
+            }}
+            transition={{ duration: 4.5, times: [0, 0.35, 0.7, 1], ease: ["easeInOut", "linear", "easeInOut"] }}
+          />
+          {/* Top Right Ring (Technology) */}
+          <motion.circle 
+            r="45.89" fill="none" stroke={color} strokeWidth="1.5"
+            initial={{ cx: 104, cy: -20, opacity: 0, scale: 1.1, transformOrigin: '50% 50%' }}
+            animate={{ 
+               cx: [104, 64.09, 64.09, 64.09], 
+               cy: [-20, 3.89, 3.89, 3.89], 
+               opacity: [0, 0.4, 0.4, 0],
+               scale: [1.1, 1, 1, 1]
+            }}
+            transition={{ duration: 4.5, times: [0, 0.35, 0.7, 1], ease: ["easeInOut", "linear", "easeInOut"] }}
+          />
+
+          {/* Final Logo Emergence */}
+          <motion.path 
+            d={pathD} 
+            fill={color} 
+            stroke={color}
+            strokeWidth="0.5"
+            initial={{ scale: 1, pathLength: 0, fillOpacity: 0, transformOrigin: '50% 50%' }}
+            animate={{ 
+               pathLength: [0, 0, 1, 1],
+               fillOpacity: [0, 0, 0, 1],
+            }}
+            transition={{ duration: 4.5, times: [0, 0.35, 0.7, 1], ease: ["linear", "easeInOut", "easeOut"] }}
+          />
+        </motion.svg>
+      </div>
+    )
+  }
+
+  if (animated === 'draw') {
+    return (
+      <div key="logo-draw" className={className}>
+        <motion.svg
+          viewBox="0 0 56 48"
+          width={size}
+          height={size}
+          className="w-full h-auto max-w-full"
+        >
+          <motion.path 
+            d={pathD} 
+            fill={color} 
+            stroke={color}
+            strokeWidth={1.5}
+            initial={{ pathLength: 0, fillOpacity: 0 }}
+            animate={{ pathLength: 1, fillOpacity: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          />
+        </motion.svg>
+      </div>
+    )
+  }
+
+  // Default 'scroll' animation for boolean true
   return (
     <div ref={containerRef} className={className}>
       <motion.svg

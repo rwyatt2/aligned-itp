@@ -294,7 +294,7 @@ export default function LogoSystem() {
             style={{ x: cSpringX, y: cSpringY }}
           >
             <div id="primary-logo-target" className="p-8 -m-8 flex items-center justify-center">
-              <AlignedLogo animated={centerHovered} />
+              <AlignedLogo animated={centerHovered ? 'converge' : 'breathing'} />
             </div>
           </motion.div>
 
