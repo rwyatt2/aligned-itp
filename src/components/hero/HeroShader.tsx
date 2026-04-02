@@ -95,6 +95,8 @@ function PhysicalGlass() {
         anisotropy={0.5}                            // Enhances diagonal stretching
         clearcoat={1}                               // Premium glossy finish on top
         clearcoatRoughness={0.1}
+        resolution={512}                            // Heavy optimization: limits internal FBO size. Visually identical.
+        samples={3}                                 // Low MSAA on internal buffer reduces GPU load
       />
     </mesh>
   )
@@ -224,7 +226,7 @@ export default function HeroShader() {
       
       <Canvas 
         camera={{ position: [0, 0, 10], fov: 35 }} 
-        dpr={[1, 2]} 
+        dpr={[1, 1.5]} // Caps retina displays at 1.5x scaling to save 50%+ fillrate cost
         gl={{ antialias: true, powerPreference: 'high-performance' }}
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
       >
