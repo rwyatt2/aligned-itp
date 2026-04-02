@@ -17,7 +17,7 @@ export default function CertifiedPartnersSection() {
       {/* Container */}
       <div className="max-w-7xl mx-auto px-6 relative z-10 antialiased">
         <div className="flex flex-col items-center justify-center text-center mb-16">
-          <span className="kicker">04 // Certifications</span>
+          <span className="kicker">03 // Certifications</span>
           <h2 className="text-4xl md:text-5xl tracking-tight font-medium text-[var(--text-primary)] mt-4 mb-6">
             Certified Partners
           </h2>

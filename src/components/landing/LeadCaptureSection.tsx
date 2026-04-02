@@ -13,7 +13,7 @@ export default function LeadCaptureSection() {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <div className="mb-6 inline-block">
-              <span className="kicker">03 // The Next Step</span>
+              <span className="kicker">04 // The Next Step</span>
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter mb-6" style={{ color: 'var(--text-primary)', lineHeight: 1 }}>
               Ready to <br />
