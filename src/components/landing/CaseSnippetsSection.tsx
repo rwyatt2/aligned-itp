@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 const cases = [
   {
     title: 'Operational Friction',
-    before: 'Relying on disconnected tools and recurring login issues. Employees lose time each day to avoidable IT problems.',
+    before: 'Relying on disconnected tools and recurring login issues. Employees lose time each day to avoidable technology problems.',
     after: 'Workflows optimized, friction reduced. Employees spend less time fighting systems and operations scale with ease.'
   },
   {
@@ -110,7 +110,7 @@ export default function CaseSnippetsSection() {
             <div className="mb-6 inline-block">
               <span className="kicker">02 // The Reality</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-gradient-cool" style={{ lineHeight: 1.1 }}>Beyond Reactive IT</h2>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-gradient-cool" style={{ lineHeight: 1.1 }}>Beyond Reactive Break/Fix</h2>
             <p className="text-base md:text-xl font-medium max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>See how we solve fundamental business challenges rather than just resetting passwords.</p>
         </motion.div>
         

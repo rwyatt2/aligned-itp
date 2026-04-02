@@ -121,7 +121,7 @@ export default function ParallaxImageSection() {
       >
         <img 
           src={`${import.meta.env.BASE_URL}images/parallax-break-new.png`} 
-          alt="Diverse team of IT consultants collaborating" 
+          alt="Diverse team of technology consultants collaborating" 
           className="w-full h-full object-cover object-center"
         />
       </motion.div>
