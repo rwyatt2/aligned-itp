@@ -1,0 +1,204 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist/wght.css";
+@import "@fontsource-variable/geist-mono/wght.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Brand Colors - Upgraded for depth */
+  --color-void: #0A0A0F;
+  --color-industrial: #324458;
+  --color-charcoal: #2A2A35;
+  --color-cool-gray: #B0CEE2;
+  --color-kinetic: #FF5E20; /* Brighter orange */
+  --color-pristine: #FFFFFF;
+
+  /* Extended palette */
+  --color-industrial-light: #90B6D5;
+  --color-kinetic-light: #FF8554;
+  --color-kinetic-dark: #cc4511;
+  --color-void-soft: #12121A;
+  --color-charcoal-light: #3D3D4E;
+
+  /* Typography */
+  --font-sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', monospace;
+
+  /* Advanced Animation */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-kinetic: cubic-bezier(0.25, 1, 0.15, 1);
+}
+
+/* ─── Light Mode (Refined) ─── */
+:root {
+  --bg-primary: #FAFAFB;
+  --bg-secondary: #F0F2F5;
+  --bg-tertiary: #E1E5E9;
+  --bg-panel: rgba(255, 255, 255, 0.8);
+  --bg-elevated: #FFFFFF;
+
+  --text-primary: #0A0A0F;
+  --text-secondary: #324458;
+  --text-tertiary: #5A6A7D;
+  --text-inverse: #FFFFFF;
+
+  --border-primary: rgba(50, 68, 88, 0.12);
+  --border-secondary: rgba(50, 68, 88, 0.05);
+  --border-accent: #FF5E20;
+
+  --accent: #FF5E20;
+  --accent-hover: #cc4511;
+  --accent-glow: rgba(255, 94, 32, 0.2);
+
+  --surface-glass: rgba(255, 255, 255, 0.7);
+  --surface-glass-border: rgba(50, 68, 88, 0.1);
+
+  --shadow-sm: 0 2px 4px rgba(10, 10, 15, 0.03);
+  --shadow-md: 0 8px 24px rgba(10, 10, 15, 0.05);
+  --shadow-lg: 0 24px 48px rgba(10, 10, 15, 0.08);
+  --shadow-glow: 0 0 35px rgba(255, 94, 32, 0.15);
+
+  color-scheme: light;
+}
+
+/* ─── Dark Mode (Premium First) ─── */
+.dark {
+  --bg-primary: #0A0A0F;
+  --bg-secondary: #12121A;
+  --bg-tertiary: #191924;
+  --bg-panel: rgba(18, 18, 26, 0.5);
+  --bg-elevated: #21212D;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #90B6D5;
+  --text-tertiary: #6C849D;
+  --text-inverse: #0A0A0F;
+
+  --border-primary: rgba(144, 182, 213, 0.12);
+  --border-secondary: rgba(144, 182, 213, 0.05);
+  --border-accent: #FF5E20;
+
+  --accent: #FF5E20;
+  --accent-hover: #FF8554;
+  --accent-glow: rgba(255, 94, 32, 0.35);
+
+  --surface-glass: rgba(18, 18, 26, 0.4);
+  --surface-glass-border: rgba(144, 182, 213, 0.08);
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 32px 64px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 50px rgba(255, 94, 32, 0.25);
+
+  color-scheme: dark;
+}
+
+/* ─── Base Styles ─── */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.5s var(--ease-smooth), color 0.4s var(--ease-smooth);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: white;
+}
+
+/* Scrollbar styling - Sleek & Modern */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ─── Utility Classes & Advanced Details ─── */
+.glass {
+  background: var(--surface-glass);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--surface-glass-border);
+}
+
+.glass-panel {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--surface-glass-border);
+  box-shadow: var(--shadow-md);
+}
+
+.dark .glass-panel {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.0) 100%);
+}
+
+.glass-card {
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--surface-glass-border);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), var(--shadow-sm);
+  transition: transform 0.4s var(--ease-kinetic), box-shadow 0.4s var(--ease-kinetic), border-color 0.4s var(--ease-smooth);
+}
+
+.glass-card:hover {
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), var(--shadow-md);
+  border-color: var(--border-primary);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--color-kinetic-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-cool {
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-tertiary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
+.glow-accent {
+  box-shadow: var(--shadow-glow);
+}
+
+/* Subtle inner glow for premium feel */
+.inner-glow {
+  box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.02);
+}
+
+.kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--color-kinetic-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: var(--font-mono);
+}
