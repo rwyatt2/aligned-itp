@@ -69,7 +69,7 @@ export default function VoiceTone() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: i * 0.15, ease: "easeOut" }}
-              className="glass-card rounded-3xl overflow-hidden p-10 md:p-12 relative group flex flex-col min-h-full"
+              className="glass-card rounded-2xl overflow-hidden p-10 md:p-12 relative group flex flex-col min-h-full"
             >
               {/* Accent top line */}
               <div
@@ -108,7 +108,7 @@ export default function VoiceTone() {
                   {archetype.traits.map((trait) => (
                     <span
                       key={trait}
-                      className="text-[10px] px-3 py-1.5 rounded-full font-bold uppercase tracking-widest"
+                      className="text-[10px] px-3 py-1.5 rounded-md font-bold uppercase tracking-widest"
                       style={{
                         backgroundColor: `color-mix(in srgb, ${archetype.color} 8%, transparent)`,
                         color: archetype.color,
@@ -142,7 +142,7 @@ export default function VoiceTone() {
                 {/* Pillar label */}
                 <div className="md:w-40 flex-shrink-0 pt-2">
                   <span
-                    className="text-xs font-bold tracking-[0.25em] uppercase px-4 py-2 rounded-full border opacity-70 group-hover:opacity-100 transition-opacity"
+                    className="text-xs font-bold tracking-[0.25em] uppercase px-4 py-2 rounded-md border opacity-70 group-hover:opacity-100 transition-opacity"
                     style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', borderColor: 'var(--accent)', backgroundColor: 'color-mix(in srgb, var(--accent) 5%, transparent)' }}
                   >
                     {p.mono}
@@ -169,7 +169,7 @@ export default function VoiceTone() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="glass-card rounded-[2.5rem] p-10 md:p-16 lg:p-24"
+          className="glass-card rounded-2xl p-10 md:p-16 lg:p-24"
         >
           <h3 className="text-2xl font-bold mb-16" style={{ color: 'var(--text-primary)' }}>
             Tone Spectrum
@@ -249,10 +249,10 @@ export default function VoiceTone() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="glass-card rounded-[2.5rem] p-10 md:p-14 relative"
+              className="glass-card rounded-2xl p-10 md:p-14 relative"
             >
               {/* Badge */}
-              <div className="inline-flex items-center justify-center px-4 py-2 rounded-full mb-12 border shadow-sm" style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', borderColor: 'rgba(34, 197, 94, 0.2)' }}>
+              <div className="inline-flex items-center justify-center px-4 py-2 rounded-md mb-12 border shadow-sm" style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', borderColor: 'rgba(34, 197, 94, 0.2)' }}>
                 <span className="text-[10px] font-bold tracking-[0.2em] text-[#22c55e] uppercase flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" /> On Brand
                 </span>
@@ -273,7 +273,7 @@ export default function VoiceTone() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Call To Action</p>
-                  <p className="text-base font-bold bg-[var(--bg-tertiary)] py-3 px-6 rounded-full inline-flex items-center gap-3 transition-colors hover:bg-[var(--bg-secondary)]" style={{ color: 'var(--accent)' }}>
+                  <p className="text-base font-bold bg-[var(--bg-tertiary)] py-3 px-6 rounded-lg inline-flex items-center gap-3 transition-colors hover:bg-[var(--bg-secondary)]" style={{ color: 'var(--accent)' }}>
                     Start the alignment <span className="text-xl leading-none">→</span>
                   </p>
                 </div>
@@ -286,10 +286,10 @@ export default function VoiceTone() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="glass-card rounded-[2.5rem] p-10 md:p-14 relative"
+              className="glass-card rounded-2xl p-10 md:p-14 relative"
             >
               {/* Badge */}
-              <div className="inline-flex items-center justify-center px-4 py-2 rounded-full mb-12 border shadow-sm" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.2)' }}>
+              <div className="inline-flex items-center justify-center px-4 py-2 rounded-md mb-12 border shadow-sm" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.2)' }}>
                 <span className="text-[10px] font-bold tracking-[0.2em] text-[#ef4444] uppercase flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" /> Off Brand
                 </span>

@@ -5,9 +5,10 @@ interface AlignedLogoProps {
   className?: string
   size?: number
   animated?: boolean
+  color?: string
 }
 
-export default function AlignedLogo({ className = '', size = 400, animated = true }: AlignedLogoProps) {
+export default function AlignedLogo({ className = '', size = 400, animated = true, color = 'var(--accent)' }: AlignedLogoProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const { scrollYProgress } = useScroll({
@@ -25,7 +26,7 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
     return (
       <div className={className}>
         <svg viewBox="0 0 56 48" width={size} height={size} className="w-full h-auto max-w-full">
-          <path d={pathD} fill="var(--accent)" />
+          <path d={pathD} fill={color} />
         </svg>
       </div>
     )
@@ -40,7 +41,7 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
         className="w-full h-auto max-w-full"
         style={{ opacity: overallOpacity, scale: scale }}
       >
-        <path d={pathD} fill="var(--accent)" />
+        <path d={pathD} fill={color} />
       </motion.svg>
     </div>
   )

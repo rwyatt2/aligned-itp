@@ -22,7 +22,7 @@ function PatternCard({ dark, children }: { dark: boolean, children: React.ReactN
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: dark ? 0 : 0.15 }}
       onMouseMove={handleMouseMove}
-      className={`rounded-[2.5rem] min-h-[320px] relative overflow-hidden group shadow-${dark ? 'md' : 'sm'}`}
+      className={`rounded-2xl min-h-[320px] relative overflow-hidden group shadow-${dark ? 'md' : 'sm'}`}
       style={{ backgroundColor: dark ? '#0A0C12' : '#FFFFFF', border: dark ? 'none' : '1px solid var(--border-secondary)' }}
     >
       <motion.div
@@ -83,7 +83,7 @@ export default function VisualLanguage() {
                 <rect width="100%" height="100%" fill="url(#dots-dark)" />
                 <rect width="100%" height="100%" fill="url(#pattern-dark)" />
               </svg>
-              <div className="absolute bottom-6 left-8 bg-[#0A0C12]/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/5 z-20">
+              <div className="absolute bottom-6 left-8 bg-[#0A0C12]/80 backdrop-blur-md px-4 py-2 rounded-md border border-white/5 z-20">
                 <span className="text-xs font-bold tracking-widest text-white/50 uppercase" style={{ fontFamily: 'var(--font-mono)' }}>
                   Dark Base — #0A0C12
                 </span>
@@ -116,7 +116,7 @@ export default function VisualLanguage() {
                 <rect width="100%" height="100%" fill="url(#dots-light)" />
                 <rect width="100%" height="100%" fill="url(#pattern-light)" />
               </svg>
-              <div className="absolute bottom-6 left-8 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full border border-black/5 z-20">
+              <div className="absolute bottom-6 left-8 bg-white/80 backdrop-blur-md px-4 py-2 rounded-md border border-black/5 z-20">
                 <span className="text-xs font-bold tracking-widest uppercase" style={{ fontFamily: 'var(--font-mono)', color: 'rgba(0,0,0,0.4)' }}>
                   Light Base — #FFFFFF
                 </span>
@@ -143,7 +143,7 @@ export default function VisualLanguage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.15 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="glass-card rounded-[2rem] p-10 cursor-pointer group flex flex-col gap-6"
+                className="glass-card rounded-2xl p-10 cursor-pointer group flex flex-col gap-6"
               >
                 <div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
@@ -184,7 +184,7 @@ export default function VisualLanguage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="rounded-[2.5rem] p-10 min-h-[250px] flex flex-col justify-between"
+              className="rounded-2xl p-10 min-h-[250px] flex flex-col justify-between"
               style={{ border: '1px solid var(--border-primary)', backgroundColor: 'var(--bg-secondary)' }}
             >
               <span className="text-sm font-bold tracking-widest uppercase" style={{ color: 'var(--text-primary)' }}>Standard Border</span>
@@ -199,7 +199,7 @@ export default function VisualLanguage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="rounded-[2.5rem] p-10 min-h-[250px] flex flex-col justify-between relative overflow-hidden"
+              className="rounded-2xl p-10 min-h-[250px] flex flex-col justify-between relative overflow-hidden"
               style={{ border: '1px solid var(--border-secondary)', backgroundColor: 'var(--bg-secondary)' }}
             >
               <div
@@ -220,7 +220,7 @@ export default function VisualLanguage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="rounded-[2.5rem] p-10 min-h-[250px] flex flex-col justify-between"
+              className="rounded-2xl p-10 min-h-[250px] flex flex-col justify-between"
               style={{ 
                 border: '1px solid color-mix(in srgb, var(--accent) 40%, transparent)', 
                 backgroundColor: 'var(--bg-secondary)',
@@ -240,11 +240,11 @@ export default function VisualLanguage() {
           <h3 className="text-2xl font-bold mb-10" style={{ color: 'var(--text-primary)' }}>
             Button System
           </h3>
-          <div className="flex flex-wrap gap-8 items-center bg-[var(--bg-tertiary)] p-12 rounded-[2.5rem] border border-[var(--border-secondary)]">
+          <div className="flex flex-wrap gap-8 items-center bg-[var(--bg-tertiary)] p-12 rounded-2xl border border-[var(--border-secondary)]">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full text-sm font-bold tracking-wide transition-all duration-300"
+              className="px-8 py-4 rounded-lg text-sm font-bold tracking-wide transition-all duration-300"
               style={{
                 backgroundColor: 'var(--accent)',
                 color: 'white',
@@ -257,7 +257,7 @@ export default function VisualLanguage() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full text-sm font-bold tracking-wide transition-all duration-300"
+              className="px-8 py-4 rounded-lg text-sm font-bold tracking-wide transition-all duration-300"
               style={{
                 backgroundColor: 'var(--bg-secondary)',
                 color: 'var(--text-primary)',

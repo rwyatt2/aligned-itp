@@ -18,7 +18,7 @@ export const brandColors: ColorData[] = [
     cmyk: '46, 19, 0, 81',
     description: 'The foundational dark. Anchors every dark-mode surface and serves as the primary text color in light mode.',
     usage: 'Primary backgrounds, body text',
-    ratio: 30,
+    ratio: 10,
   },
   {
     name: 'Graphite',
@@ -28,7 +28,7 @@ export const brandColors: ColorData[] = [
     cmyk: '8, 11, 0, 72',
     description: 'The neutral workhorse. UI panels, cards, and tertiary backgrounds.',
     usage: 'UI panels, card backgrounds',
-    ratio: 20,
+    ratio: 5,
   },
   {
     name: 'Steel Blue',
@@ -38,7 +38,7 @@ export const brandColors: ColorData[] = [
     cmyk: '36, 19, 0, 58',
     description: 'Structural depth. Borders, dividers, and secondary backgrounds.',
     usage: 'Structural borders, secondary surfaces',
-    ratio: 15,
+    ratio: 3,
   },
   {
     name: 'Ice Blue',
@@ -48,7 +48,7 @@ export const brandColors: ColorData[] = [
     cmyk: '22, 9, 0, 11',
     description: 'The quiet partner. Subtle highlights, metallic accents, and cool background tints.',
     usage: 'Highlights, subtle tints',
-    ratio: 15,
+    ratio: 2,
   },
   {
     name: 'Rust Orange',
@@ -58,7 +58,7 @@ export const brandColors: ColorData[] = [
     cmyk: '0, 63, 84, 35',
     description: 'Deep energy. Hover states, active borders, and rich accents that ground the primary kinetic orange.',
     usage: 'Hover states, secondary accents',
-    ratio: 10,
+    ratio: 5,
   },
   {
     name: 'Kinetic Orange',
@@ -68,7 +68,7 @@ export const brandColors: ColorData[] = [
     cmyk: '0, 60, 81, 9',
     description: 'The spark. Primary action color, CTA buttons, highlights, and accent marks. Must pop aggressively.',
     usage: 'CTAs, accents, highlights',
-    ratio: 10,
+    ratio: 15,
   },
   {
     name: 'Abyss Black',
@@ -78,7 +78,7 @@ export const brandColors: ColorData[] = [
     cmyk: '40, 33, 0, 94',
     description: 'Deepest shadow. An industry best-practice off-black that avoids OLED smearing while maintaining ultra-high contrast.',
     usage: 'Ultimate contrast, deep shadows',
-    ratio: 5,
+    ratio: 30,
   },
   {
     name: 'Arctic White',
@@ -88,7 +88,7 @@ export const brandColors: ColorData[] = [
     cmyk: '1, 0, 0, 2',
     description: 'Clean slate. An industry best-practice off-white that reduces eye strain compared to pure hex #FFFFFF.',
     usage: 'Primary light backgrounds',
-    ratio: 5,
+    ratio: 30,
   },
 ]
 

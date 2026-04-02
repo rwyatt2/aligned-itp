@@ -16,18 +16,10 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme()
   const [activeSection, setActiveSection] = useState('hero')
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [hidden, setHidden] = useState(false)
   
   const { scrollY } = useScroll()
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious() ?? 0
-    if (latest > previous && latest > 150) {
-      setHidden(true)
-    } else {
-      setHidden(false)
-    }
-    
     // Manage active section
     const scrollPos = latest + window.innerHeight / 3
     for (let i = sections.length - 1; i >= 0; i--) {
@@ -51,18 +43,17 @@ export default function Navbar() {
       <motion.nav
         variants={{
           visible: { y: 0, opacity: 1 },
-          hidden: { y: -100, opacity: 0 },
         }}
-        animate={hidden ? "hidden" : "visible"}
+        animate="visible"
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="fixed top-0 left-0 right-0 z-50 px-4 py-4 md:px-8 mt-2 md:mt-4 pointer-events-none"
       >
         <div className="mx-auto max-w-5xl pointer-events-auto">
-          <div className="glass-panel p-2 md:p-2.5 rounded-[2rem] flex items-center justify-between">
+          <div className="glass-panel p-2 md:p-2.5 rounded-2xl flex items-center justify-between">
             {/* Logo Mark */}
             <button
               onClick={() => scrollTo('hero')}
-              className="flex items-center gap-2 px-3 py-1 group rounded-full transition-colors hover:bg-[var(--bg-tertiary)]"
+              className="flex items-center gap-2 px-3 py-1 group rounded-md transition-colors hover:bg-[var(--bg-tertiary)]"
             >
               <div className="w-6 h-6 relative">
                 <svg viewBox="0 0 56 48" className="w-full h-full">
@@ -84,7 +75,7 @@ export default function Navbar() {
                 <button
                   key={section.id}
                   onClick={() => scrollTo(section.id)}
-                  className="relative px-4 py-2 text-xs font-semibold tracking-wide uppercase transition-colors duration-300 rounded-full"
+                  className="relative px-4 py-2 text-xs font-semibold tracking-wide uppercase transition-colors duration-300 rounded-lg"
                   style={{
                     color: activeSection === section.id ? 'var(--text-primary)' : 'var(--text-tertiary)',
                     fontFamily: 'var(--font-mono)',
@@ -94,7 +85,7 @@ export default function Navbar() {
                   {activeSection === section.id && (
                     <motion.div
                       layoutId="nav-bg"
-                      className="absolute inset-0 rounded-full -z-10"
+                      className="absolute inset-0 rounded-lg -z-10"
                       style={{ backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-secondary)' }}
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
@@ -108,7 +99,7 @@ export default function Navbar() {
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="relative w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-[var(--bg-tertiary)]"
+                className="relative w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-[var(--bg-tertiary)]"
                 style={{ color: 'var(--text-secondary)' }}
                 aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               >
@@ -128,7 +119,7 @@ export default function Navbar() {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)]"
+                className="md:hidden w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)]"
                 style={{ color: 'var(--text-secondary)' }}
                 aria-label="Toggle menu"
               >

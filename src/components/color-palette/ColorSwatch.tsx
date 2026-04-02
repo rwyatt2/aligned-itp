@@ -47,7 +47,7 @@ export default function ColorSwatch({ color, index }: ColorSwatchProps) {
     { label: 'CMYK', value: color.cmyk },
   ]
 
-  const isLight = ['#FFFFFF'].includes(color.hex)
+  const isLight = ['#FFFFFF', '#F8F9FA'].includes(color.hex)
 
   return (
     <motion.div

@@ -72,7 +72,7 @@ function LogoRule({ correct, label, description, children }: LogoRuleProps) {
         </motion.div>
         
         <div
-          className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center backdrop-blur-md"
+          className="absolute top-2 right-2 w-6 h-6 rounded-md flex items-center justify-center backdrop-blur-md"
           style={{
             backgroundColor: correct ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
             border: `1px solid ${correct ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
@@ -137,7 +137,7 @@ export default function LogoSystem() {
           initial={{ opacity: 0, scale: 0.95, y: 30 }}
           animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-panel rounded-3xl p-12 md:p-24 mb-16 flex flex-col items-center justify-center relative overflow-hidden group"
+          className="glass-panel rounded-2xl p-12 md:p-24 mb-16 flex flex-col items-center justify-center relative overflow-hidden group"
         >
           {/* Subtle background glow that follows mouse slightly */}
           <motion.div 
@@ -168,7 +168,7 @@ export default function LogoSystem() {
               onClick={handleDownload}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="glass px-6 py-2.5 rounded-full flex items-center gap-3 text-sm font-semibold tracking-wide border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-tertiary)] hover:border-[var(--accent)]"
+              className="glass px-6 py-2.5 rounded-lg flex items-center gap-3 text-sm font-semibold tracking-wide border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-tertiary)] hover:border-[var(--accent)]"
               style={{ color: 'var(--text-primary)' }}
             >
               {downloaded ? (
@@ -195,7 +195,7 @@ export default function LogoSystem() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="glass-card rounded-3xl p-8"
+            className="glass-card rounded-2xl p-8"
           >
             <h3 className="text-xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
               Clear Space
@@ -206,7 +206,7 @@ export default function LogoSystem() {
             <div className="relative flex items-center justify-center py-16 bg-[var(--bg-tertiary)] rounded-2xl shadow-inner border border-[var(--border-secondary)]">
               {/* Dashed boundary lines */}
               <div
-                className="absolute inset-[15%] rounded-[2rem]"
+                className="absolute inset-[15%] rounded-2xl"
                 style={{ border: '2px dashed var(--accent)', opacity: 0.5 }}
               />
               {/* Inner mark */}
@@ -234,7 +234,7 @@ export default function LogoSystem() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="glass-card rounded-3xl p-8"
+            className="glass-card rounded-2xl p-8"
           >
             <h3 className="text-xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
               Minimum Size
@@ -253,7 +253,7 @@ export default function LogoSystem() {
                   <div style={{ width: item.size, height: item.size, opacity: item.ok ? 1 : 0.3 }}>
                     <AlignedLogo animated={false} />
                   </div>
-                  <div className="flex items-center gap-1.5 bg-[var(--bg-primary)] px-2.5 py-1 rounded-full border border-[var(--border-secondary)]">
+                  <div className="flex items-center gap-1.5 bg-[var(--bg-primary)] px-2.5 py-1 rounded-md border border-[var(--border-secondary)]">
                     {!item.ok && <AlertTriangle size={12} strokeWidth={3} style={{ color: '#ef4444' }} />}
                     <span
                       className="text-[10px] font-bold tracking-widest uppercase"
@@ -283,8 +283,8 @@ export default function LogoSystem() {
             </LogoRule>
 
             <LogoRule correct={true} label="Monochrome" description="High-contrast solid color">
-              <div className="w-16" style={{ filter: 'grayscale(1) brightness(2)' }}>
-                <AlignedLogo animated={false} />
+              <div className="w-16">
+                <AlignedLogo animated={false} color="var(--text-primary)" />
               </div>
             </LogoRule>
 
@@ -301,7 +301,7 @@ export default function LogoSystem() {
             </LogoRule>
 
             <LogoRule correct={false} label="Drop Shadows" description="Never add external effects">
-              <div className="w-16" style={{ filter: 'drop-shadow(6px 6px 10px rgba(0,0,0,0.8))' }}>
+              <div className="w-16" style={{ filter: 'drop-shadow(6px 6px 10px var(--text-primary))' }}>
                 <AlignedLogo animated={false} />
               </div>
             </LogoRule>

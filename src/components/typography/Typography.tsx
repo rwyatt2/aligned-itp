@@ -79,7 +79,7 @@ export default function Typography() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass-panel rounded-3xl p-6 md:p-10 relative overflow-hidden group"
+          className="glass-panel rounded-2xl p-6 md:p-10 relative overflow-hidden group"
         >
           {/* Subtle animated background gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg-tertiary)] to-[var(--bg-primary)] opacity-50 -z-10" />
@@ -131,7 +131,7 @@ export default function Typography() {
                 />
               </div>
 
-              <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest text-center glass-card p-3 rounded-xl border border-[var(--border-primary)]" style={{ fontFamily: 'var(--font-mono)' }}>
+              <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest text-center glass-card p-3 rounded-md border border-[var(--border-primary)]" style={{ fontFamily: 'var(--font-mono)' }}>
                 Geist Sans Variable
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function Typography() {
         </motion.div>
 
         {/* Type Scale */}
-        <div className="glass-card rounded-3xl p-6 md:p-10">
+        <div className="glass-card rounded-2xl p-6 md:p-10">
           <h3 className="text-lg font-bold mb-8 flex items-center gap-4" style={{ color: 'var(--text-primary)' }}>
             <span className="w-8 h-px bg-[var(--accent)] inline-block" />
             Type Hierarchy
@@ -191,7 +191,7 @@ export default function Typography() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="glass-card rounded-3xl p-8 hover:-translate-y-1 transition-transform duration-500"
+            className="glass-card rounded-2xl p-8 hover:-translate-y-1 transition-transform duration-500"
           >
             <span className="kicker mb-6 block drop-shadow-sm">Geist Sans — Body</span>
             <p className="text-base leading-relaxed mb-6 font-medium text-[var(--text-primary)]">
@@ -209,7 +209,7 @@ export default function Typography() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="glass-card rounded-3xl p-8 hover:-translate-y-1 transition-transform duration-500"
+            className="glass-card rounded-2xl p-8 hover:-translate-y-1 transition-transform duration-500"
           >
             <span className="kicker mb-6 block drop-shadow-sm">Geist Mono — Technical</span>
             <div style={{ fontFamily: 'var(--font-mono)' }}>
@@ -217,15 +217,15 @@ export default function Typography() {
                 Used for hex codes, data labels, specifications, and technical callouts. Creates clear visual distinction from editorial content.
               </p>
               <div className="space-y-3">
-                <div className="flex items-center gap-4 px-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
+                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
                   <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#DB5227' }} />
                   <span className="text-[10px] md:text-xs tracking-wider" style={{ color: 'var(--text-primary)' }}>#DB5227 — Kinetic Orange</span>
                 </div>
-                <div className="flex items-center gap-4 px-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
+                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
                   <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#023661' }} />
                   <span className="text-[10px] md:text-xs tracking-wider" style={{ color: 'var(--text-primary)' }}>#023661 — Industrial Blue</span>
                 </div>
-                <div className="flex items-center gap-4 px-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
+                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] shadow-inner">
                   <span className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: '#0A0C12' }} />
                   <span className="text-[10px] md:text-xs tracking-wider" style={{ color: 'var(--text-primary)' }}>#0A0C12 — Void Black</span>
                 </div>

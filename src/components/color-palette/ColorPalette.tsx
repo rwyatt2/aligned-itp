@@ -27,7 +27,7 @@ export default function ColorPalette() {
               <div className="w-4 h-4 rounded-sm flex-shrink-0"
                    style={{
                      backgroundColor: color.hex,
-                     border: color.hex === '#FFFFFF' ? '1px solid var(--border-secondary)' : 'none',
+                     border: ['#FFFFFF', '#F8F9FA'].includes(color.hex) ? '1px solid var(--border-secondary)' : 'none',
                    }}
               />
               <span className="text-xs font-medium w-36 flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>
@@ -36,7 +36,7 @@ export default function ColorPalette() {
               <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                 <div
                   className="h-full rounded-full transition-all duration-1000"
-                  style={{ width: `${color.ratio}%`, backgroundColor: color.hex === '#FFFFFF' ? 'var(--border-primary)' : color.hex }}
+                  style={{ width: `${color.ratio}%`, backgroundColor: ['#FFFFFF', '#F8F9FA'].includes(color.hex) ? 'var(--border-primary)' : color.hex }}
                 />
               </div>
               <span className="text-xs font-mono w-8 text-right" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>

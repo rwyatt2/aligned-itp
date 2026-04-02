@@ -100,62 +100,110 @@ function PhysicalGlass() {
   )
 }
 
-function FloatingLogoRings() {
-  const groupRef = useRef<THREE.Group>(null)
+// Mathematically generate a procedural brushed metal map so the spin is highly visible
+const generateBrushedMetalMap = () => {
+  const size = 512
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return new THREE.Texture()
+  const imageData = ctx.createImageData(size, size)
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    const val = Math.random() * 80 + 120 // Middle-gray noise variations
+    imageData.data[i] = val
+    imageData.data[i+1] = val
+    imageData.data[i+2] = val
+    imageData.data[i+3] = 255
+  }
+  ctx.putImageData(imageData, 0, 0)
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  // Drastically stretch the noise horizontally. 
+  // On a torus, this wraps the noise tightly along the tube, creating a beautiful brushed/lathed metal effect.
+  texture.repeat.set(120, 1) 
+  return texture
+}
 
-  // Slowly rotate the entire logo assembly for a premium, heavy feel
+function FloatingLogoRings() {
+  const ring1Ref = useRef<THREE.Mesh>(null)
+  const ring2Ref = useRef<THREE.Mesh>(null)
+  const ring3Ref = useRef<THREE.Mesh>(null)
+  
+  const brushedMap = useMemo(() => generateBrushedMetalMap(), [])
+
+  // Slowly rotate each ring individually like cogs in a machine
   useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.z = state.clock.elapsedTime * 0.05
-    }
+    const time = state.clock.elapsedTime
+    // Alternate directions to simulate interlocking gears
+    if (ring1Ref.current) ring1Ref.current.rotation.z = time * 0.15
+    if (ring2Ref.current) ring2Ref.current.rotation.z = -time * 0.15
+    if (ring3Ref.current) ring3Ref.current.rotation.z = -time * 0.15
   })
 
   // Torus dimensions to match the Aligned logo scale
   const radius = 2.5
   const tube = 0.35
-  const offset = 1.8
+  
+  // EXACT OVERLAP MATH DERIVED FROM THE PROVIDED SVG:
+  // In the SVG, the distance between centers is exactly 42, and the radius is 21. 
+  // Thus, the distance between any two ring centers is exactly 2 * radius.
+  // This means the center-paths of the toruses kiss tangentially, 
+  // and they only "overlap" because of the tube thickness.
+  // To form an equilateral triangle with side length L = 2 * radius,
+  // the distance from origin to a vertex (circumradius) is L / sqrt(3).
+  const offset = (2 * radius) / Math.sqrt(3)
 
-  // Placed in an equilateral triangle layout
-  const c1: [number, number, number] = [0, offset, 0]
-  const c2: [number, number, number] = [offset * 0.866, -offset * 0.5, 0]
-  const c3: [number, number, number] = [-offset * 0.866, -offset * 0.5, 0]
+  // Inverted layout: Two rings on top, one on bottom, matching the exact reference image
+  // 0.866 is approx Math.sqrt(3)/2
+  const sqrt3v2 = Math.sqrt(3) / 2
+  const c1: [number, number, number] = [-offset * sqrt3v2, offset * 0.5, 0] // Top Left
+  const c2: [number, number, number] = [offset * sqrt3v2, offset * 0.5, 0]  // Top Right
+  const c3: [number, number, number] = [0, -offset, 0]                      // Bottom Center
 
   return (
-    <group ref={groupRef} position={[0, 0, -3]}>
+    <group position={[0, 0, -3]}>
       <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
-        {/* Ring 1 - Kinetic Orange */}
-        <mesh position={c1}>
+        {/* Ring 1 - Top Left */}
+        <mesh ref={ring1Ref} position={c1}>
           <torusGeometry args={[radius, tube, 64, 128]} />
           <meshPhysicalMaterial 
             color="#FF5E20" 
             emissive="#FF5E20"
-            emissiveIntensity={1.2}
-            roughness={0.2}
+            emissiveIntensity={0.6} // Reduced slightly to allow the brushed metal reflection to shine
+            roughnessMap={brushedMap}
+            roughness={0.7}
             metalness={0.8}
+            clearcoat={0.3}
           />
         </mesh>
         
-        {/* Ring 2 - Industrial Blue */}
-        <mesh position={c2}>
-          <torusGeometry args={[radius, tube, 64, 128]} />
-          <meshPhysicalMaterial 
-            color="#324458" 
-            emissive="#324458"
-            emissiveIntensity={1.5}
-            roughness={0.2}
-            metalness={0.8}
-          />
-        </mesh>
-        
-        {/* Ring 3 - Kinetic Orange */}
-        <mesh position={c3}>
+        {/* Ring 2 - Bottom Right */}
+        <mesh ref={ring2Ref} position={c2}>
           <torusGeometry args={[radius, tube, 64, 128]} />
           <meshPhysicalMaterial 
             color="#FF5E20" 
             emissive="#FF5E20"
-            emissiveIntensity={1.2}
-            roughness={0.2}
+            emissiveIntensity={0.6}
+            roughnessMap={brushedMap}
+            roughness={0.7}
             metalness={0.8}
+            clearcoat={0.3}
+          />
+        </mesh>
+        
+        {/* Ring 3 - Bottom Left */}
+        <mesh ref={ring3Ref} position={c3}>
+          <torusGeometry args={[radius, tube, 64, 128]} />
+          <meshPhysicalMaterial 
+            color="#FF5E20" 
+            emissive="#FF5E20"
+            emissiveIntensity={0.6}
+            roughnessMap={brushedMap}
+            roughness={0.7}
+            metalness={0.8}
+            clearcoat={0.3}
           />
         </mesh>
       </Float>

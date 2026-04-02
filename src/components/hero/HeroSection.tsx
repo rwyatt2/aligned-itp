@@ -57,6 +57,12 @@ export default function HeroSection() {
             backgroundSize: '4rem 4rem'
           }}
         />
+
+        {/* Heavy Vignette Shadow to obscure the edges and bring text forward */}
+        <div 
+          className="absolute inset-0 z-10 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at center, transparent 10%, var(--bg-primary) 90%)', opacity: 0.85 }}
+        />
       </motion.div>
       
       {/* Physical gradient overlay fixed to the bottom of the section to flawlessly blur the WebGL canvas into the page background */}
@@ -78,7 +84,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="mb-8"
           >
-            <div className="glass-panel px-4 py-2 rounded-full inline-block">
+            <div className="glass px-4 py-2 rounded-2xl inline-block shadow-sm">
               <span className="kicker">Brand Guidelines · 2026</span>
             </div>
           </motion.div>
@@ -173,7 +179,7 @@ export default function HeroSection() {
       {/* Logo Card Section */}
       <section id="logo-card" className="relative min-h-screen flex items-center justify-center px-4 bg-[var(--bg-primary)] z-10 py-24">
         <div className="max-w-lg w-full">
-          <div className="glass-panel p-8 md:p-12 rounded-[3rem] relative overflow-hidden">
+          <div className="glass-panel p-8 md:p-12 rounded-2xl relative overflow-hidden">
             {/* Inner ambient glow for the logo card */}
             <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-panel)] to-transparent opacity-50" />
             
@@ -202,7 +208,7 @@ export default function HeroSection() {
                     {item.line}
                   </div>
                   <div
-                    className="text-[10px] md:text-xs tracking-widest uppercase px-3 py-1 rounded-full border"
+                    className="text-[10px] md:text-xs tracking-widest uppercase px-3 py-1 rounded-md border"
                     style={{ 
                       color: 'var(--text-tertiary)', 
                       fontFamily: 'var(--font-mono)',
