@@ -4,7 +4,26 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 function QuantumFieldBackground() {
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
   const [rectDims, setRectDims] = useState({ width: 0, height: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [time, setTime] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    const animate = () => {
+      setTime(Date.now() * 0.001);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+    animate();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
 
   useEffect(() => {
     const updateDims = () => {
@@ -28,8 +47,8 @@ function QuantumFieldBackground() {
     return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
   }, []);
 
-  const rows = 16;
-  const cols = 32;
+  const rows = isMobile ? 12 : 16;
+  const cols = isMobile ? 12 : 32;
 
   return (
     <div 
@@ -49,10 +68,19 @@ function QuantumFieldBackground() {
           if (rectDims.width > 0) {
             const cellX = (col / cols) * rectDims.width;
             const cellY = (row / rows) * rectDims.height;
-            const dx = mousePos.x - cellX;
-            const dy = mousePos.y - cellY;
+            
+            let currentMouseX = mousePos.x;
+            let currentMouseY = mousePos.y;
+
+            if (isMobile || (mousePos.x === -1000 && mousePos.y === -1000)) {
+               currentMouseX = (rectDims.width / 2) + Math.cos(time * 0.5) * (rectDims.width * 0.3);
+               currentMouseY = (rectDims.height / 2) + Math.sin(time * 0.3) * (rectDims.height * 0.3);
+            }
+
+            const dx = currentMouseX - cellX;
+            const dy = currentMouseY - cellY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDist = 200;
+            const maxDist = isMobile ? 120 : 200;
             
             if (distance < maxDist) {
                angle = Math.atan2(dy, dx) * (180 / Math.PI);
@@ -67,7 +95,7 @@ function QuantumFieldBackground() {
               <motion.div
                 animate={{ rotate: angle, scale: scale * 0.8 }}
                 transition={{ type: "spring", stiffness: 50, damping: 20 }}
-                className="w-4 h-[2px] opacity-40 origin-center"
+                className="w-2 md:w-4 h-[2px] opacity-40 origin-center"
                 style={{
                    boxShadow: scale > 1.2 ? '0 0 8px var(--accent-glow)' : 'none',
                    backgroundColor: scale > 1.5 ? 'var(--accent)' : 'var(--text-secondary)'

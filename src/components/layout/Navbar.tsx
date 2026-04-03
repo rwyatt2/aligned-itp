@@ -119,7 +119,7 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
                   style={{ color: currentView === 'landing' ? 'var(--accent)' : 'var(--text-secondary)' }}
                 >
                   <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-mono)' }}>
-                    {currentView === 'guidelines' ? 'Client View' : 'Guidelines'}
+                    {currentView === 'guidelines' ? 'Landing Page' : 'Guidelines'}
                   </span>
                 </button>
               )}
