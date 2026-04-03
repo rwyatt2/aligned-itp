@@ -133,7 +133,7 @@ export default function HeroSection() {
       <QuantumFieldBackground />
 
       {/* Hero Content */}
-      <div className="relative h-full min-h-[90vh] flex flex-col items-center justify-center px-6 pt-24 pb-12 z-30 pointer-events-none">
+      <div className="relative h-full min-h-[90vh] flex flex-col items-center justify-center px-4 md:px-6 pt-32 md:pt-24 pb-12 z-30 pointer-events-none">
         <motion.div
           style={{ opacity: textOpacity, y: textY }}
           className="text-center max-w-5xl mx-auto flex flex-col items-center pointer-events-auto"
@@ -155,7 +155,7 @@ export default function HeroSection() {
             variants={sentence}
             initial="hidden"
             animate="visible"
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-[1.05]"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-[1.05]"
             style={{ color: 'var(--text-primary)' }}
           >
             {['Turn', 'Technology', 'into', 'a'].map((w, i) => (

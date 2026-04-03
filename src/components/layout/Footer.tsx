@@ -16,7 +16,7 @@ const aboutLinks = [
 export default function Footer() {
   return (
     <footer className="w-full bg-[#0A0A0F] text-white py-16 px-6 relative z-10 border-t border-[var(--border-secondary)]">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 text-sm pt-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-8 text-sm pt-8">
         
         {/* Brand Column (Left) */}
         <div className="lg:col-span-1 flex flex-col gap-6">
@@ -38,7 +38,7 @@ export default function Footer() {
         {/* DFW Areas We Serve */}
         <div className="lg:col-span-1">
           <h4 className="font-semibold text-white mb-6">DFW Areas We Serve</h4>
-          <div className="flex gap-8">
+          <div className="grid grid-cols-2 gap-4">
             <ul className="flex flex-col gap-3">
               {dfwAreas1.map(area => (
                 <li key={area}>

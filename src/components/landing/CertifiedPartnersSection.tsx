@@ -13,9 +13,9 @@ const partners = [
 
 export default function CertifiedPartnersSection() {
   return (
-    <section className="py-24 relative overflow-hidden bg-transparent">
+    <section id="partners" className="py-16 md:py-24 relative overflow-hidden bg-transparent">
       {/* Container */}
-      <div className="max-w-7xl mx-auto px-6 relative z-10 antialiased">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10 antialiased">
         <div className="flex flex-col items-center justify-center text-center mb-16">
           <span className="kicker">03 // Certifications</span>
           <h2 className="text-4xl md:text-5xl tracking-tight font-medium text-[var(--text-primary)] mt-4 mb-6">
@@ -26,7 +26,7 @@ export default function CertifiedPartnersSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pointer-events-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 pointer-events-auto">
           {partners.map((partner, idx) => (
             <motion.div
               key={idx}
@@ -34,7 +34,7 @@ export default function CertifiedPartnersSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="flex items-center justify-center p-6 glass-panel rounded-2xl hover:border-[var(--border-primary)] transition-colors duration-300 group"
+              className="flex items-center justify-center p-4 md:p-6 glass-panel rounded-2xl hover:border-[var(--border-primary)] transition-colors duration-300 group"
             >
               {/* Removed the hard white background. Instead we rely on dark:invert to cleanly flip black text/logos to white, and white JPG backgrounds to black in dark mode. */}
               <div className="w-full h-24 flex items-center justify-center rounded-xl p-4 group-hover:scale-105 transition-transform duration-500 ease-out">

@@ -22,7 +22,7 @@ const pillars = [
 
 export default function FrameworkSection() {
   return (
-    <section className="py-24 px-4 md:px-8 w-full bg-[var(--bg-primary)] relative z-10">
+    <section id="framework" className="py-16 md:py-24 px-4 md:px-8 w-full bg-[var(--bg-primary)] relative z-10">
       <div className="max-w-7xl mx-auto">
         <motion.div
            initial={{ opacity: 0, y: 20 }}
@@ -34,7 +34,7 @@ export default function FrameworkSection() {
           <div className="mb-6 inline-block">
             <span className="kicker">01 // The Framework</span>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ color: 'var(--text-primary)', lineHeight: 1.1 }}>
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ color: 'var(--text-primary)', lineHeight: 1.1 }}>
             The Growth Alignment Framework
           </h2>
           <p className="text-lg md:text-xl font-medium max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>

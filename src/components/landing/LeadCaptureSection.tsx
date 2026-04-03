@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 
 export default function LeadCaptureSection() {
   return (
-    <section id="lead-capture" className="py-24 px-4 md:px-8 w-full relative bg-[var(--bg-primary)]">
+    <section id="lead-capture" className="py-16 md:py-24 px-4 md:px-8 w-full relative bg-[var(--bg-primary)]">
       <div className="max-w-5xl mx-auto relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-16">
         
         <div className="flex-1 text-center md:text-left">
@@ -32,7 +32,7 @@ export default function LeadCaptureSection() {
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="w-full md:w-[450px]"
         >
-          <div className="glass-panel p-8 md:p-10 rounded-2xl w-full flex flex-col gap-6 relative">
+          <div className="glass-panel p-6 md:p-10 rounded-2xl w-full flex flex-col gap-6 relative">
             <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-panel)] to-transparent rounded-2xl opacity-50" />
             
             <div className="relative z-10 font-mono text-[10px] uppercase tracking-widest font-bold pb-4 mb-2" style={{ color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border-secondary)' }}>

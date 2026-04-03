@@ -3,13 +3,21 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { Sun, Moon, Menu, X } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 
-const sections = [
+const guidelineSections = [
   { id: 'hero', label: 'Home' },
   { id: 'logo-system', label: 'Logo' },
   { id: 'color-palette', label: 'Color' },
   { id: 'typography', label: 'Type' },
   { id: 'visual-language', label: 'Visual' },
   { id: 'voice-tone', label: 'Voice' },
+]
+
+const landingSections = [
+  { id: 'client-hero', label: 'Home' },
+  { id: 'framework', label: 'Framework' },
+  { id: 'reality', label: 'Reality' },
+  { id: 'partners', label: 'Partners' },
+  { id: 'lead-capture', label: 'Contact' },
 ]
 
 interface NavbarProps {
@@ -24,14 +32,16 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
   
   const { scrollY } = useScroll()
 
+  const activeSectionsList = currentView === 'guidelines' ? guidelineSections : landingSections
+
   useMotionValueEvent(scrollY, "change", (latest) => {
     // Manage active section
     const scrollPos = latest + window.innerHeight / 3
-    for (let i = sections.length - 1; i >= 0; i--) {
-      const el = document.getElementById(sections[i].id)
+    for (let i = activeSectionsList.length - 1; i >= 0; i--) {
+      const el = document.getElementById(activeSectionsList[i].id)
       if (el && el.offsetTop <= scrollPos) {
-        if (activeSection !== sections[i].id) {
-          setActiveSection(sections[i].id)
+        if (activeSection !== activeSectionsList[i].id) {
+          setActiveSection(activeSectionsList[i].id)
         }
         break
       }
@@ -76,7 +86,7 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-1 px-4">
-              {currentView === 'guidelines' && sections.slice(1).map((section) => (
+              {activeSectionsList.slice(1).map((section) => (
                 <button
                   key={section.id}
                   onClick={() => scrollTo(section.id)}
@@ -159,7 +169,7 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
             className="fixed inset-x-0 top-24 z-40 px-4 md:hidden"
           >
             <div className="glass-panel rounded-2xl p-4 shadow-xl">
-              {currentView === 'guidelines' && sections.map((section) => (
+              {activeSectionsList.map((section) => (
                 <button
                   key={section.id}
                   onClick={() => scrollTo(section.id)}
