@@ -117,8 +117,7 @@ export default function HeroSection() {
             className="text-lg md:text-xl max-w-2xl mx-auto mb-16 font-medium"
             style={{ color: 'var(--text-primary)' }}
           >
-            Aligning people, process, and technology to help your business operate better.
-            <br />
+
             <strong className="mt-2 block font-mono uppercase tracking-[0.1em] text-xs" style={{ color: 'var(--text-secondary)' }}>Protect • Optimize • Advance</strong>
           </motion.p>
         </motion.div>
