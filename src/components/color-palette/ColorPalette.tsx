@@ -1,6 +1,7 @@
 import SectionWrapper from '../layout/SectionWrapper'
 import ColorSwatch from './ColorSwatch'
-import { brandColors } from '../../lib/colors'
+import GradientSwatch from './GradientSwatch'
+import { brandColors, brandGradients } from '../../lib/colors'
 
 export default function ColorPalette() {
   return (
@@ -14,6 +15,20 @@ export default function ColorPalette() {
         {brandColors.map((color, i) => (
           <ColorSwatch key={color.slug} color={color} index={i} />
         ))}
+      </div>
+
+      <div className="mt-16">
+        <h3 className="text-xl font-bold mb-6 tracking-tight" style={{ color: 'var(--text-primary)' }}>
+          Brand Gradients
+        </h3>
+        <p className="text-sm mb-8 max-w-2xl" style={{ color: 'var(--text-secondary)' }}>
+          Gradients build dimensional depth and highlight active states. Always use the predefined CSS variables or these exact hex combinations. 
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {brandGradients.map((gradient, i) => (
+            <GradientSwatch key={gradient.slug} gradient={gradient} index={i} />
+          ))}
+        </div>
       </div>
 
       {/* Usage Ratios Summary */}
