@@ -7,8 +7,10 @@ import LeadCaptureSection from '../components/landing/LeadCaptureSection'
 
 export default function ClientLanding() {
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans antialiased selection:bg-[var(--accent)] selection:text-white pb-32">
       <HeroSection />
+      
+      {/* 02 // THE REALITY - Process/Framework Section */}
       <FrameworkSection />
       <ParallaxImageSection />
       <CaseSnippetsSection />
