@@ -3,8 +3,8 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 
 interface AlignedLogoProps {
   className?: string
-  size?: number
-  animated?: boolean | 'scroll' | 'breathing' | 'draw' | 'converge'
+  size?: number | string
+  animated?: boolean | 'scroll' | 'breathing' | 'draw' | 'converge' | 'outline'
   color?: string
 }
 
@@ -133,6 +133,29 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
             initial={{ pathLength: 0, fillOpacity: 0 }}
             animate={{ pathLength: 1, fillOpacity: 1 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
+          />
+        </motion.svg>
+      </div>
+    )
+  }
+
+  if (animated === 'outline') {
+    return (
+      <div key="logo-outline" className={className}>
+        <motion.svg
+          viewBox="0 0 56 48"
+          width={size}
+          height={size}
+          className="w-full h-auto max-w-full"
+        >
+          <motion.path 
+            d={pathD} 
+            fill="none" 
+            stroke={color}
+            strokeWidth={0.5}
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.6 }}
+            transition={{ duration: 3, ease: "easeInOut" }}
           />
         </motion.svg>
       </div>

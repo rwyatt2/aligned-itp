@@ -32,7 +32,7 @@ const archetypes = [
 const messagingPillars = [
   {
     pillar: 'Alignment',
-    headline: 'Alignment that drives growth.',
+    headline: 'Aligning people, process and Technology to advance your business.',
     body: 'People, process, and technology must be aligned to serve the mission. Real progress happens when systems, workflows, and teams work together in ways that support how the organization actually operates.',
     mono: 'ALIGNMENT',
   },
@@ -280,7 +280,7 @@ export default function VoiceTone() {
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Headline</p>
                   <p className="text-3xl font-extrabold tracking-tight leading-tight" style={{ color: 'var(--text-primary)' }}>
-                    Alignment that <span className="text-gradient">drives growth.</span>
+                    Aligning people, process and Technology to <span className="text-gradient">advance your business.</span>
                   </p>
                 </div>
                 <div>

@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import AlignedLogo from './AlignedLogo'
-import HeroShader from './HeroShader'
+import TechSchematic from './TechSchematic'
 export default function HeroSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -42,34 +42,13 @@ export default function HeroSection() {
         ref={sectionRef}
         className="relative h-screen overflow-hidden bg-[var(--bg-primary)]"
       >
-      {/* WebGL Refractive Shader Background */}
+      {/* Tech Schematic Background */}
       <motion.div
-        className="absolute inset-0 pointer-events-none overflow-hidden"
+        className="absolute inset-0 pointer-events-none overflow-hidden z-0"
         style={{ y: bgY }}
       >
-        <HeroShader />
-
-        {/* Subtle grid overlay to ground the abstract shapes */}
-        <div 
-          className="absolute inset-0 opacity-[0.04] dark:opacity-[0.07] z-10 pointer-events-none"
-          style={{
-            backgroundImage: `linear-gradient(var(--border-primary) 1px, transparent 1px), linear-gradient(90deg, var(--border-primary) 1px, transparent 1px)`,
-            backgroundSize: '4rem 4rem'
-          }}
-        />
-
-        {/* Heavy Vignette Shadow to obscure the edges and bring text forward */}
-        <div 
-          className="absolute inset-0 z-10 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at center, transparent 10%, var(--bg-primary) 90%)', opacity: 0.85 }}
-        />
+        <TechSchematic />
       </motion.div>
-      
-      {/* Physical gradient overlay fixed to the bottom of the section to flawlessly blur the WebGL canvas into the page background */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-64 z-20 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, var(--bg-primary) 0%, transparent 100%)' }}
-      />
 
       {/* Hero Content - Fixed while scrolling */}
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-6">
@@ -126,7 +105,7 @@ export default function HeroSection() {
             className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-10 mt-6"
             style={{ color: 'var(--text-primary)', lineHeight: 1.1 }}
           >
-            Alignment that <span className="drop-shadow-lg">drives growth</span>
+            Aligning people, process and Technology to advance your business
             <span style={{ color: 'var(--accent)' }}>.</span>
           </motion.h2>
 
