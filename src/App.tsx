@@ -46,7 +46,8 @@ export default function App() {
 
   const handleViewChange = (view: 'guidelines' | 'landing') => {
     setCurrentView(view)
-    window.history.pushState({}, '', view === 'landing' ? '?view=landing' : '/')
+    const basePath = import.meta.env.BASE_URL
+    window.history.pushState({}, '', view === 'landing' ? `${basePath}?view=landing` : basePath)
     window.scrollTo(0, 0)
   }
 
