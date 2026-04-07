@@ -403,7 +403,7 @@ export default function Typography() {
                   const formatData = family.formats[format]
                   return (
                     <>
-                      <div className="px-8 py-4 space-y-2 max-h-[340px] overflow-y-auto">
+                      <div className="px-8 py-4 space-y-2">
                         {formatData.files.map((file) => (
                           <button
                             key={file.name}
