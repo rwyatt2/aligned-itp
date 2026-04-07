@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import SectionWrapper from '../layout/SectionWrapper'
 
@@ -59,10 +59,95 @@ const typeScale = [
   },
 ]
 
+const basePath = import.meta.env.BASE_URL
+
+const fontFamilies = [
+  {
+    name: 'Geist Sans',
+    description: 'Primary typeface for headlines, body copy, and UI elements. Variable weight 100–900.',
+    fontFamily: 'var(--font-sans)',
+    sampleText: 'Aa',
+    files: [
+      { name: 'geist-latin-wght-normal.woff2', path: `${basePath}fonts/geist/geist-latin-wght-normal.woff2`, subset: 'Latin', size: '27.7 KB' },
+      { name: 'geist-latin-ext-wght-normal.woff2', path: `${basePath}fonts/geist/geist-latin-ext-wght-normal.woff2`, subset: 'Latin Extended', size: '14.9 KB' },
+      { name: 'geist-cyrillic-wght-normal.woff2', path: `${basePath}fonts/geist/geist-cyrillic-wght-normal.woff2`, subset: 'Cyrillic', size: '14.3 KB' },
+    ],
+  },
+  {
+    name: 'Geist Mono',
+    description: 'Monospace companion for code, data labels, specs, and technical callouts. Variable weight 100–900.',
+    fontFamily: 'var(--font-mono)',
+    sampleText: 'Aa',
+    files: [
+      { name: 'geist-mono-latin-wght-normal.woff2', path: `${basePath}fonts/geist-mono/geist-mono-latin-wght-normal.woff2`, subset: 'Latin', size: '30.6 KB' },
+      { name: 'geist-mono-latin-ext-wght-normal.woff2', path: `${basePath}fonts/geist-mono/geist-mono-latin-ext-wght-normal.woff2`, subset: 'Latin Extended', size: '12.7 KB' },
+      { name: 'geist-mono-cyrillic-wght-normal.woff2', path: `${basePath}fonts/geist-mono/geist-mono-cyrillic-wght-normal.woff2`, subset: 'Cyrillic', size: '12.3 KB' },
+    ],
+  },
+]
+
+function DownloadIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 1.5v9m0 0L4.5 7M8 10.5l3.5-3.5M2.5 13h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function PackageIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15.75 12V6a1.5 1.5 0 00-.75-1.3l-5.25-3a1.5 1.5 0 00-1.5 0l-5.25 3A1.5 1.5 0 002.25 6v6a1.5 1.5 0 00.75 1.3l5.25 3a1.5 1.5 0 001.5 0l5.25-3a1.5 1.5 0 00.75-1.3z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2.58 5.22L9 9.01l6.42-3.79M9 16.56V9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export default function Typography() {
   const [testText, setTestText] = useState('Alignment is the solution.')
   const [testWeight, setTestWeight] = useState(600)
   const [testSize, setTestSize] = useState(64)
+  const [downloadingAll, setDownloadingAll] = useState<string | null>(null)
+
+  const downloadFile = useCallback((url: string, filename: string) => {
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }, [])
+
+  const downloadAllFonts = useCallback(async (familyName: string, files: typeof fontFamilies[0]['files']) => {
+    setDownloadingAll(familyName)
+    try {
+      // Dynamically import JSZip (tree-shaken, only loaded when user clicks download)
+      const JSZip = (await import('jszip')).default
+      const zip = new JSZip()
+
+      // Fetch all font files and add to zip
+      await Promise.all(
+        files.map(async (file) => {
+          const response = await fetch(file.path)
+          const blob = await response.blob()
+          zip.file(file.name, blob)
+        })
+      )
+
+      // Generate and download zip
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const url = URL.createObjectURL(zipBlob)
+      const safeName = familyName.toLowerCase().replace(/\s+/g, '-')
+      downloadFile(url, `${safeName}-variable.zip`)
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error('Failed to create zip:', err)
+      // Fallback: download files individually
+      files.forEach((file) => downloadFile(file.path, file.name))
+    } finally {
+      setDownloadingAll(null)
+    }
+  }, [downloadFile])
 
   return (
     <SectionWrapper
@@ -135,6 +220,146 @@ export default function Typography() {
                 Geist Sans Variable
               </div>
             </div>
+          </div>
+        </motion.div>
+
+        {/* ─── Font Download Section ─── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h3 className="text-lg font-bold mb-8 flex items-center gap-4" style={{ color: 'var(--text-primary)' }}>
+            <span className="w-8 h-px bg-[var(--accent)] inline-block" />
+            Font Downloads
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {fontFamilies.map((family, idx) => (
+              <motion.div
+                key={family.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className="glass-card rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-500"
+              >
+                {/* Font preview header */}
+                <div
+                  className="px-8 pt-10 pb-8 relative overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%)',
+                  }}
+                >
+                  <div className="absolute top-4 right-4">
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-[0.2em] px-2.5 py-1 rounded-full border border-[var(--border-primary)]"
+                      style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}
+                    >
+                      Variable
+                    </span>
+                  </div>
+                  
+                  {/* Large glyph preview */}
+                  <div className="flex items-end gap-6">
+                    <span
+                      className="text-8xl font-light leading-none tracking-tighter opacity-90"
+                      style={{ fontFamily: family.fontFamily, color: 'var(--text-primary)' }}
+                    >
+                      {family.sampleText}
+                    </span>
+                    <div className="pb-3 flex-1 min-w-0">
+                      <h4 className="text-base font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                        {family.name}
+                      </h4>
+                      <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
+                        {family.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Weight strip preview */}
+                  <div className="mt-6 flex items-baseline gap-3 overflow-hidden">
+                    {[100, 200, 300, 400, 500, 600, 700, 800, 900].map((w) => (
+                      <span
+                        key={w}
+                        className="text-xs whitespace-nowrap transition-opacity hover:opacity-100"
+                        style={{
+                          fontFamily: family.fontFamily,
+                          fontWeight: w,
+                          color: 'var(--text-secondary)',
+                          opacity: w === 400 || w === 600 || w === 700 ? 1 : 0.45,
+                        }}
+                      >
+                        {w}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* File list */}
+                <div className="px-8 py-6 space-y-2">
+                  {family.files.map((file) => (
+                    <button
+                      key={file.name}
+                      onClick={() => downloadFile(file.path, file.name)}
+                      className="w-full group/file flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] transition-all duration-200 hover:border-[var(--accent)] hover:shadow-[0_0_16px_rgba(255,94,32,0.08)] cursor-pointer text-left"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center flex-shrink-0 group-hover/file:border-[var(--accent)] group-hover/file:bg-[rgba(255,94,32,0.06)] transition-colors">
+                        <span className="text-[9px] font-bold uppercase" style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>W2</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-xs font-medium block truncate" style={{ color: 'var(--text-primary)' }}>
+                          {file.subset}
+                        </span>
+                        <span className="text-[10px] block truncate" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
+                          {file.name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-[10px]" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
+                          {file.size}
+                        </span>
+                        <DownloadIcon className="w-3.5 h-3.5 text-[var(--text-tertiary)] group-hover/file:text-[var(--accent)] transition-colors" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Download all button */}
+                <div className="px-8 pb-8">
+                  <button
+                    onClick={() => downloadAllFonts(family.name, family.files)}
+                    disabled={downloadingAll === family.name}
+                    className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl font-semibold text-sm transition-all duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                    style={{
+                      background: downloadingAll === family.name 
+                        ? 'var(--bg-tertiary)'
+                        : 'linear-gradient(135deg, var(--accent) 0%, var(--color-kinetic-dark) 100%)',
+                      color: downloadingAll === family.name ? 'var(--text-secondary)' : '#FFFFFF',
+                      boxShadow: downloadingAll === family.name ? 'none' : '0 4px 16px rgba(255, 94, 32, 0.3)',
+                    }}
+                  >
+                    {downloadingAll === family.name ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                          className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                        />
+                        Packaging…
+                      </>
+                    ) : (
+                      <>
+                        <PackageIcon className="w-4 h-4" />
+                        Download All ({family.files.length} files)
+                      </>
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
 
