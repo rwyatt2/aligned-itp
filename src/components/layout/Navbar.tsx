@@ -21,8 +21,8 @@ const landingSections = [
 ]
 
 interface NavbarProps {
-  currentView?: 'guidelines' | 'landing'
-  onViewChange?: (view: 'guidelines' | 'landing') => void
+  currentView?: 'guidelines' | 'landing' | 'logos'
+  onViewChange?: (view: 'guidelines' | 'landing' | 'logos') => void
 }
 
 export default function Navbar({ currentView = 'guidelines', onViewChange }: NavbarProps) {
@@ -84,44 +84,57 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
               </span>
             </button>
 
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-1 px-4">
-              {activeSectionsList.slice(1).map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => scrollTo(section.id)}
-                  className="relative px-4 py-2 text-xs font-semibold tracking-wide uppercase transition-colors duration-300 rounded-lg"
-                  style={{
-                    color: activeSection === section.id ? 'var(--text-primary)' : 'var(--text-tertiary)',
-                    fontFamily: 'var(--font-mono)',
-                  }}
-                >
-                  {section.label}
-                  {activeSection === section.id && (
-                    <motion.div
-                      layoutId="nav-bg"
-                      className="absolute inset-0 rounded-lg -z-10"
-                      style={{ backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-secondary)' }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
+            {/* Desktop Nav — hidden on Logo Concepts view */}
+            {currentView !== 'logos' && (
+              <div className="hidden md:flex items-center gap-1 px-4">
+                {activeSectionsList.slice(1).map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => scrollTo(section.id)}
+                    className="relative px-4 py-2 text-xs font-semibold tracking-wide uppercase transition-colors duration-300 rounded-lg"
+                    style={{
+                      color: activeSection === section.id ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    {section.label}
+                    {activeSection === section.id && (
+                      <motion.div
+                        layoutId="nav-bg"
+                        className="absolute inset-0 rounded-lg -z-10"
+                        style={{ backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-secondary)' }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Right Controls */}
             <div className="flex items-center gap-2 pr-1">
               {/* View Toggle */}
               {onViewChange && (
-                <button
-                  onClick={() => onViewChange(currentView === 'guidelines' ? 'landing' : 'guidelines')}
-                  className="px-3 md:px-4 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] md:border-transparent md:hover:border-[var(--border-secondary)]"
-                  style={{ color: currentView === 'landing' ? 'var(--accent)' : 'var(--text-secondary)' }}
-                >
-                  <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-mono)' }}>
-                    {currentView === 'guidelines' ? 'Landing Page' : 'Guidelines'}
-                  </span>
-                </button>
+                <>
+                  <button
+                    onClick={() => onViewChange(currentView === 'guidelines' ? 'landing' : 'guidelines')}
+                    className="px-3 md:px-4 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] md:border-transparent md:hover:border-[var(--border-secondary)]"
+                    style={{ color: currentView === 'landing' ? 'var(--accent)' : 'var(--text-secondary)' }}
+                  >
+                    <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-mono)' }}>
+                      {currentView === 'guidelines' ? 'Landing Page' : 'Guidelines'}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => onViewChange(currentView === 'logos' ? 'guidelines' : 'logos')}
+                    className="px-3 md:px-4 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] md:border-transparent md:hover:border-[var(--border-secondary)]"
+                    style={{ color: currentView === 'logos' ? 'var(--accent)' : 'var(--text-secondary)' }}
+                  >
+                    <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-mono)' }}>
+                      Logo Concepts
+                    </span>
+                  </button>
+                </>
               )}
 
               {/* Theme Toggle */}
@@ -144,48 +157,52 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
                 </AnimatePresence>
               </button>
 
-              {/* Mobile Menu Toggle */}
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)]"
-                style={{ color: 'var(--text-secondary)' }}
-                aria-label="Toggle menu"
-              >
-                {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-              </button>
+              {/* Mobile Menu Toggle — hidden on Logo Concepts view */}
+              {currentView !== 'logos' && (
+                <button
+                  onClick={() => setMobileOpen(!mobileOpen)}
+                  className="md:hidden w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)]"
+                  style={{ color: 'var(--text-secondary)' }}
+                  aria-label="Toggle menu"
+                >
+                  {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+                </button>
+              )}
             </div>
           </div>
         </div>
       </motion.nav>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed inset-x-0 top-24 z-40 px-4 md:hidden"
-          >
-            <div className="glass-panel rounded-2xl p-4 shadow-xl">
-              {activeSectionsList.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => scrollTo(section.id)}
-                  className="block w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 mb-1"
-                  style={{
-                    color: activeSection === section.id ? 'var(--accent)' : 'var(--text-primary)',
-                    backgroundColor: activeSection === section.id ? 'var(--accent-glow)' : 'transparent',
-                  }}
-                >
-                  {section.label}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Mobile Menu — hidden on Logo Concepts view */}
+      {currentView !== 'logos' && (
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="fixed inset-x-0 top-24 z-40 px-4 md:hidden"
+            >
+              <div className="glass-panel rounded-2xl p-4 shadow-xl">
+                {activeSectionsList.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => scrollTo(section.id)}
+                    className="block w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 mb-1"
+                    style={{
+                      color: activeSection === section.id ? 'var(--accent)' : 'var(--text-primary)',
+                      backgroundColor: activeSection === section.id ? 'var(--accent-glow)' : 'transparent',
+                    }}
+                  >
+                    {section.label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </>
   )
 }

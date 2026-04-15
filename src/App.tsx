@@ -10,6 +10,7 @@ import Typography from './components/typography/Typography'
 import VisualLanguage from './components/visual-language/VisualLanguage'
 import VoiceTone from './components/voice-tone/VoiceTone'
 import ClientLanding from './pages/ClientLanding'
+import LogoAlternatives from './pages/LogoAlternatives'
 
 function AnimatedDivider() {
   return (
@@ -40,14 +41,18 @@ function AnimatedDivider() {
 }
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'guidelines' | 'landing'>(() => {
-    return new URLSearchParams(window.location.search).get('view') === 'landing' ? 'landing' : 'guidelines'
+  const [currentView, setCurrentView] = useState<'guidelines' | 'landing' | 'logos'>(() => {
+    const view = new URLSearchParams(window.location.search).get('view')
+    if (view === 'landing') return 'landing'
+    if (view === 'logos') return 'logos'
+    return 'guidelines'
   })
 
-  const handleViewChange = (view: 'guidelines' | 'landing') => {
+  const handleViewChange = (view: 'guidelines' | 'landing' | 'logos') => {
     setCurrentView(view)
     const basePath = import.meta.env.BASE_URL
-    window.history.pushState({}, '', view === 'landing' ? `${basePath}?view=landing` : basePath)
+    const suffix = view === 'guidelines' ? '' : `?view=${view}`
+    window.history.pushState({}, '', `${basePath}${suffix}`)
     window.scrollTo(0, 0)
   }
 
@@ -93,6 +98,8 @@ export default function App() {
             <AnimatedDivider />
             <VoiceTone />
           </>
+        ) : currentView === 'logos' ? (
+          <LogoAlternatives />
         ) : (
           <ClientLanding />
         )}
