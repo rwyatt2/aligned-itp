@@ -43,7 +43,7 @@ function AnimatedDivider() {
 export default function App() {
   const [currentView, setCurrentView] = useState<'guidelines' | 'landing' | 'logos'>(() => {
     const view = new URLSearchParams(window.location.search).get('view')
-    if (view === 'landing') return 'landing'
+    // Landing page hidden temporarily
     if (view === 'logos') return 'logos'
     return 'guidelines'
   })

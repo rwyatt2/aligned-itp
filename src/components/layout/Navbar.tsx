@@ -116,6 +116,7 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
               {/* View Toggle */}
               {onViewChange && (
                 <>
+                  {/* Landing Page button hidden temporarily
                   <button
                     onClick={() => onViewChange(currentView === 'guidelines' ? 'landing' : 'guidelines')}
                     className="px-3 md:px-4 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] md:border-transparent md:hover:border-[var(--border-secondary)]"
@@ -125,6 +126,7 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
                       {currentView === 'guidelines' ? 'Landing Page' : 'Guidelines'}
                     </span>
                   </button>
+                  */}
                   <button
                     onClick={() => onViewChange(currentView === 'logos' ? 'guidelines' : 'logos')}
                     className="px-3 md:px-4 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] md:border-transparent md:hover:border-[var(--border-secondary)]"
