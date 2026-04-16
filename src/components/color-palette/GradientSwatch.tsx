@@ -1,6 +1,6 @@
-import { useRef } from 'react'
+import { useRef, useCallback, useState } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { Check, Copy } from 'lucide-react'
+import { Check, Copy, Download, Loader2 } from 'lucide-react'
 import { useClipboard } from '../../hooks/useClipboard'
 import type { GradientData } from '../../lib/colors'
 
@@ -9,9 +9,13 @@ interface GradientSwatchProps {
   index: number
 }
 
+const EXPORT_WIDTH = 1920
+const EXPORT_HEIGHT = 1080
+
 export default function GradientSwatch({ gradient, index }: GradientSwatchProps) {
   const { copy, copiedValue } = useClipboard()
   const ref = useRef<HTMLDivElement>(null)
+  const [downloading, setDownloading] = useState<'png' | 'jpeg' | null>(null)
 
   // 3D Tilt Setup
   const x = useMotionValue(0)
@@ -40,6 +44,76 @@ export default function GradientSwatch({ gradient, index }: GradientSwatchProps)
     x.set(0)
     y.set(0)
   }
+
+  const downloadGradient = useCallback(async (format: 'png' | 'jpeg') => {
+    setDownloading(format)
+
+    try {
+      const canvas = document.createElement('canvas')
+      canvas.width = EXPORT_WIDTH
+      canvas.height = EXPORT_HEIGHT
+      const ctx = canvas.getContext('2d')!
+
+      // Create a temporary element with the gradient, visibly rendered in the page
+      // We make it invisible to the user via clip-path but it must be in-viewport
+      // so the browser actually paints the CSS background
+      const wrapper = document.createElement('div')
+      wrapper.style.cssText = `
+        position: fixed; top: 0; left: 0; z-index: -1;
+        width: ${EXPORT_WIDTH}px; height: ${EXPORT_HEIGHT}px;
+        pointer-events: none; clip: rect(0,0,0,0);
+        overflow: hidden;
+      `
+      const node = document.createElement('div')
+      node.style.cssText = `
+        width: ${EXPORT_WIDTH}px; height: ${EXPORT_HEIGHT}px;
+        background: ${gradient.css};
+      `
+      wrapper.appendChild(node)
+      document.body.appendChild(wrapper)
+
+      // Give the browser a frame to paint the CSS gradient
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
+
+      // Use html-to-image to capture the rendered gradient
+      const { toPng, toJpeg } = await import('html-to-image')
+
+      let dataUrl: string
+      const options = {
+        width: EXPORT_WIDTH, 
+        height: EXPORT_HEIGHT,
+        pixelRatio: 1,
+        cacheBust: true,
+        canvasWidth: EXPORT_WIDTH,
+        canvasHeight: EXPORT_HEIGHT,
+        style: {
+          // Override clip so html-to-image can see the element
+          clip: 'auto',
+          overflow: 'visible',
+        },
+      }
+
+      if (format === 'png') {
+        dataUrl = await toPng(node, options)
+      } else {
+        dataUrl = await toJpeg(node, { ...options, quality: 0.95 })
+      }
+
+      document.body.removeChild(wrapper)
+
+      // Trigger download
+      const link = document.createElement('a')
+      link.download = `${gradient.slug}-${EXPORT_WIDTH}x${EXPORT_HEIGHT}.${format}`
+      link.href = dataUrl
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (err) {
+      console.error(`Failed to export gradient as ${format}:`, err)
+    } finally {
+      setDownloading(null)
+    }
+  }, [gradient])
 
   const values = [
     { label: 'CSS', value: gradient.css }
@@ -149,6 +223,44 @@ export default function GradientSwatch({ gradient, index }: GradientSwatchProps)
                 </AnimatePresence>
               </motion.button>
             ))}
+
+            {/* Download Buttons */}
+            <div className="flex gap-2 pt-1">
+              {(['png', 'jpeg'] as const).map((format) => (
+                <motion.button
+                  key={format}
+                  onClick={() => downloadGradient(format)}
+                  disabled={downloading !== null}
+                  initial={{ opacity: 0.8 }}
+                  whileHover={{ opacity: 1, scale: 1.03, y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border border-transparent hover:border-[var(--border-primary)] disabled:opacity-40 disabled:cursor-wait"
+                  style={{
+                    backgroundColor: 'var(--bg-tertiary)',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  {downloading === format ? (
+                    <motion.span
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    >
+                      <Loader2 size={13} />
+                    </motion.span>
+                  ) : (
+                    <Download size={13} />
+                  )}
+                  <span className="uppercase tracking-[0.15em]" style={{ fontSize: '10px' }}>
+                    {format}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+
+            <p className="text-center pt-0.5" style={{ fontSize: '9px', color: 'var(--text-tertiary)', opacity: 0.6 }}>
+              {EXPORT_WIDTH} × {EXPORT_HEIGHT}px  ·  Hero-ready
+            </p>
           </div>
         </div>
       </motion.div>
