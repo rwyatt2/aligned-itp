@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { motion, useInView, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
 import { Check, X, AlertTriangle, Download } from 'lucide-react'
+import { useDownloadGuard } from '../../context/DownloadGuardContext'
 import SectionWrapper from '../layout/SectionWrapper'
 import AlignedLogo from '../hero/AlignedLogo'
 
@@ -98,6 +99,7 @@ function CardDownloadButton({ size = 14 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const { guardDownload } = useDownloadGuard()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -175,7 +177,7 @@ function CardDownloadButton({ size = 14 }) {
             {['SVG', 'PNG', 'JPG'].map(format => (
               <button
                 key={format}
-                onClick={(e) => handleDownload(e, format)}
+                onClick={(e) => { e.stopPropagation(); guardDownload(() => handleDownload(e, format)) }}
                 className="text-left px-3 py-1.5 text-xs font-bold rounded-lg transition-colors hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]"
                 style={{ color: 'var(--text-secondary)' }}
               >
@@ -196,6 +198,7 @@ export default function LogoSystem() {
   const [isOpen, setIsOpen] = useState(false)
   const [isDownloadingMain, setIsDownloadingMain] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const { guardDownload } = useDownloadGuard()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -342,7 +345,7 @@ export default function LogoSystem() {
                     {['SVG Vector', 'PNG Transparent', 'JPG Studio'].map(format => (
                       <button
                         key={format}
-                        onClick={() => handleDownload(format)}
+                        onClick={() => guardDownload(() => handleDownload(format))}
                         className="text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]"
                         style={{ color: 'var(--text-secondary)' }}
                       >

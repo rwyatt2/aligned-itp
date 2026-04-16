@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import SectionWrapper from '../layout/SectionWrapper'
+import { useDownloadGuard } from '../../context/DownloadGuardContext'
 
 const typeScale = [
   {
@@ -183,6 +184,7 @@ export default function Typography() {
     'Geist Sans': 'otf',
     'Geist Mono': 'otf',
   })
+  const { guardDownload } = useDownloadGuard()
 
   const downloadFile = useCallback((url: string, filename: string) => {
     const a = document.createElement('a')
@@ -407,7 +409,7 @@ export default function Typography() {
                         {formatData.files.map((file) => (
                           <button
                             key={file.name}
-                            onClick={() => downloadFile(file.path, file.name)}
+                            onClick={() => guardDownload(() => downloadFile(file.path, file.name))}
                             className="w-full group/file flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] transition-all duration-200 hover:border-[var(--accent)] hover:shadow-[0_0_16px_rgba(255,94,32,0.08)] cursor-pointer text-left"
                           >
                             <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center flex-shrink-0 group-hover/file:border-[var(--accent)] group-hover/file:bg-[rgba(255,94,32,0.06)] transition-colors">
@@ -436,7 +438,7 @@ export default function Typography() {
                       {/* Download all button */}
                       <div className="px-8 pb-8 pt-2">
                         <button
-                          onClick={() => downloadAllFonts(family.name, formatData.files)}
+                          onClick={() => guardDownload(() => downloadAllFonts(family.name, formatData.files))}
                           disabled={downloadingAll === family.name}
                           className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl font-semibold text-sm transition-all duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                           style={{

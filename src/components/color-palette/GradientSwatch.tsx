@@ -2,6 +2,7 @@ import { useRef, useCallback, useState } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { Check, Copy, Download, Loader2 } from 'lucide-react'
 import { useClipboard } from '../../hooks/useClipboard'
+import { useDownloadGuard } from '../../context/DownloadGuardContext'
 import type { GradientData } from '../../lib/colors'
 
 interface GradientSwatchProps {
@@ -14,6 +15,7 @@ const EXPORT_HEIGHT = 1080
 
 export default function GradientSwatch({ gradient, index }: GradientSwatchProps) {
   const { copy, copiedValue } = useClipboard()
+  const { guardDownload } = useDownloadGuard()
   const ref = useRef<HTMLDivElement>(null)
   const [downloading, setDownloading] = useState<'png' | 'jpeg' | null>(null)
 
@@ -225,7 +227,7 @@ export default function GradientSwatch({ gradient, index }: GradientSwatchProps)
               {(['png', 'jpeg'] as const).map((format) => (
                 <motion.button
                   key={format}
-                  onClick={() => downloadGradient(format)}
+                  onClick={() => guardDownload(() => downloadGradient(format))}
                   disabled={downloading !== null}
                   initial={{ opacity: 0.8 }}
                   whileHover={{ opacity: 1, scale: 1.03, y: -1 }}
