@@ -48,12 +48,8 @@ export default function GradientSwatch({ gradient, index }: GradientSwatchProps)
   const downloadGradient = useCallback(async (format: 'png' | 'jpeg') => {
     setDownloading(format)
 
-    try {
-      const canvas = document.createElement('canvas')
-      canvas.width = EXPORT_WIDTH
-      canvas.height = EXPORT_HEIGHT
-      const ctx = canvas.getContext('2d')!
 
+    try {
       // Create a temporary element with the gradient, visibly rendered in the page
       // We make it invisible to the user via clip-path but it must be in-viewport
       // so the browser actually paints the CSS background
