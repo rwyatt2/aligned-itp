@@ -195,10 +195,8 @@ export default function LogoSystem() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
-
   // Magnetic center logo
   const centerRef = useRef<HTMLDivElement>(null)
-  const [centerHovered, setCenterHovered] = useState(false)
   const cx = useMotionValue(0)
   const cy = useMotionValue(0)
   const cSpringX = useSpring(cx, { stiffness: 400, damping: 25 })
@@ -223,31 +221,31 @@ export default function LogoSystem() {
       <div ref={ref}>
         {/* Primary Mark Display */}
         <motion.div
-           ref={centerRef}
-           onMouseMove={handleCenterMouseMove}
-           onMouseEnter={() => setCenterHovered(true)}
-           onMouseLeave={() => { cx.set(0); cy.set(0); setCenterHovered(false) }}
+          ref={centerRef}
+          onMouseMove={handleCenterMouseMove}
+          onMouseLeave={() => { cx.set(0); cy.set(0) }}
           initial={{ opacity: 0, scale: 0.95, y: 30 }}
           animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="glass-panel rounded-2xl p-12 md:p-24 mb-16 flex flex-col items-center justify-center relative overflow-hidden group"
         >
-          {/* Subtle background glow that follows mouse slightly */}
-          <motion.div 
-            className="absolute -z-10 w-[40vw] h-[40vw] rounded-full filter blur-[80px] opacity-5 transition-opacity duration-700 pointer-events-none group-hover:opacity-10"
-            style={{ 
-              background: 'radial-gradient(circle, var(--text-primary) 0%, transparent 70%)',
+          {/* Subtle background glow that follows cursor */}
+          <motion.div
+            className="absolute -z-10 w-[40vw] h-[40vw] rounded-full filter blur-[80px] opacity-[0.07] pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)',
               x: cSpringX,
-              y: cSpringY
+              y: cSpringY,
             }}
           />
 
-          <motion.div 
-            className="relative w-48 md:w-72 drop-shadow-2xl z-10"
+          {/* Logo wrapper: magnetic spring offset + hover scale/lift */}
+          <motion.div
+            className="relative w-48 md:w-72 z-10 transition-transform duration-400 ease-out group-hover:scale-[1.03] group-hover:-translate-y-0.5"
             style={{ x: cSpringX, y: cSpringY }}
           >
-            <div id="primary-logo-target" className="p-8 -m-8 flex items-center justify-center">
-              <AlignedLogo animated={centerHovered ? 'converge' : 'breathing'} />
+            <div id="primary-logo-target">
+              <AlignedLogo animated="reveal" />
             </div>
           </motion.div>
 
