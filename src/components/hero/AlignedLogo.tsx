@@ -20,12 +20,12 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
   const overallOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1])
   const scale = useTransform(scrollYProgress, [0, 0.4], [0.8, 1])
 
-  const pathD = "M37.8223 0.549805C37.732 1.45903 37.6856 2.3816 37.6855 3.31445L37.6904 3.85059C37.9043 15.0773 44.8151 24.666 54.5957 28.7871L55.1182 29.0068L44.3477 47.6611L43.8955 47.3184C39.4033 43.9073 33.8367 41.8389 27.791 41.7129L27.2041 41.707C21.2019 41.7071 15.648 43.6208 11.1172 46.8711L10.6689 47.1924L0.276367 29.1904L0 28.7129L0.501953 28.4854C9.92022 24.2093 16.5138 14.8042 16.7178 3.83789L16.7227 3.31445C16.7226 2.38127 16.6772 1.45867 16.5869 0.549805L16.5322 0H37.877L37.8223 0.549805ZM33.0967 23.9375C31.915 26.455 30.525 28.8549 28.9463 31.1143C32.85 36.213 37.8039 40.4631 43.4814 43.5508L51.127 30.3057C45.7502 27.0029 39.6406 24.7785 33.0967 23.9375ZM21.3086 23.9375C15.0278 24.7452 9.14764 26.8292 3.93066 29.916L11.5918 43.1826C16.9903 40.1287 21.7087 36.0122 25.459 31.1143C23.8804 28.8549 22.4902 26.455 21.3086 23.9375ZM27.2041 33.4551C25.5128 35.5907 23.6458 37.5805 21.625 39.4033C23.4341 39.0684 25.2989 38.8926 27.2041 38.8926L27.6895 38.8965C29.4253 38.9236 31.126 39.0971 32.7803 39.4033C30.7602 37.5806 28.8948 35.5903 27.2041 33.4551ZM26.2861 23.5684C25.6185 23.5817 24.9543 23.6098 24.2939 23.6514C25.1585 25.3906 26.132 27.0663 27.2031 28.6719C28.2736 27.0667 29.2461 25.3913 30.1104 23.6523C29.1492 23.5918 28.1801 23.5596 27.2041 23.5596L26.2861 23.5684ZM17.793 13.4873C16.5326 17.0417 14.6301 20.2903 12.2266 23.0977C14.7799 22.2713 17.4259 21.6516 20.1445 21.2559C19.153 18.7612 18.3629 16.165 17.793 13.4873ZM36.6113 13.4893C36.0414 16.1662 35.2521 18.7617 34.2607 21.2559C36.9795 21.6514 39.6254 22.2713 42.1787 23.0977C39.7757 20.2907 37.8716 17.0429 36.6113 13.4893ZM19.5371 3.31445L19.541 3.91016C19.618 9.93443 20.8635 15.676 23.0527 20.9238C24.421 20.8078 25.8056 20.7451 27.2041 20.7451L28.3438 20.7588C29.3551 20.7825 30.3586 20.8395 31.3535 20.9238C33.615 15.5031 34.8701 9.55609 34.8701 3.31445L34.8643 2.80469H19.5439C19.5416 2.97486 19.5371 3.14473 19.5371 3.31445Z"
+  const pathD = "M1088.98 745.654L1121 691.207C977.139 471.994 832.804 233.21 732.232 0H680.76C578.646 226.567 453.642 445.423 309.9 648.147C284.164 648.859 258.428 649.926 232.692 651.35C376.197 452.659 500.014 223.008 608.77 0H545.557C434.548 225.974 306.342 455.032 160.583 655.858C134.136 657.518 107.451 660.009 81.1219 662.263C227.355 460.132 354.256 227.041 464.79 0H401.696C286.654 234.633 151.57 471.52 0 680.056L26.2104 724.539C274.201 698.561 525.869 695.833 773.86 721.218C787.736 743.756 801.968 766.057 816.437 788.239C586.236 760.6 311.679 772.225 62.3832 785.985L94.8794 841.025C348.682 827.621 621.697 818.369 857.473 849.803L899.694 911.842C665.342 882.068 388.531 889.897 131.527 903.302L164.023 958.461C429.092 945.768 709.935 941.735 954.724 974L980.816 929.636C837.311 726.674 706.258 509.597 604.145 283.268C615.767 261.679 627.271 239.971 638.42 218.145C715.628 403.906 885.936 664.398 1016.75 868.427L1049.13 813.387C914.044 603.19 749.191 348.628 671.628 151.717C682.064 130.483 696.178 100.354 706.496 78.7646C804.103 302.603 950.099 534.626 1088.98 745.654ZM737.213 660.721C618.614 650.045 499.184 645.419 379.873 646.724C447.238 548.98 512.112 448.389 570.225 344.714C620.63 452.422 676.371 558.232 737.213 660.721Z"
 
   if (!animated) {
     return (
       <div className={className}>
-        <svg viewBox="0 0 56 48" width={size} height={size} className="w-full h-auto max-w-full">
+        <svg viewBox="0 0 1121 974" width={size} height={size} className="w-full h-auto max-w-full">
           <path d={pathD} fill={color} />
         </svg>
       </div>
@@ -36,7 +36,7 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
     return (
       <div key="logo-breathing" className={className}>
         <motion.svg
-          viewBox="0 0 56 48"
+          viewBox="0 0 1121 974"
           width={size}
           height={size}
           className="w-full h-auto max-w-full"
@@ -56,60 +56,17 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
     return (
       <div key="logo-converge" className={className}>
         <motion.svg
-          viewBox="0 0 56 48"
+          viewBox="0 0 1121 974"
           width={size}
           height={size}
           className="w-full h-auto max-w-full overflow-visible drop-shadow-xl"
         >
-          {/* Bottom Ring (People) */}
-          <motion.circle 
-            r="45.89" fill="none" stroke={color} strokeWidth="1.5"
-            initial={{ cx: 27.02, cy: 110, opacity: 0, scale: 1.1, transformOrigin: '50% 50%' }}
-            animate={{ 
-               cx: [27.02, 27.02, 27.02, 27.02], 
-               cy: [110, 68.11, 68.11, 68.11], 
-               opacity: [0, 0.4, 0.4, 0],
-               scale: [1.1, 1, 1, 1]
-            }}
-            transition={{ duration: 4.5, times: [0, 0.35, 0.7, 1], ease: ["easeInOut", "linear", "easeInOut"] }}
-          />
-          {/* Top Left Ring (Process) */}
-          <motion.circle 
-            r="45.89" fill="none" stroke={color} strokeWidth="1.5"
-            initial={{ cx: -50, cy: -20, opacity: 0, scale: 1.1, transformOrigin: '50% 50%' }}
-            animate={{ 
-               cx: [-50, -10.04, -10.04, -10.04], 
-               cy: [-20, 3.89, 3.89, 3.89], 
-               opacity: [0, 0.4, 0.4, 0],
-               scale: [1.1, 1, 1, 1]
-            }}
-            transition={{ duration: 4.5, times: [0, 0.35, 0.7, 1], ease: ["easeInOut", "linear", "easeInOut"] }}
-          />
-          {/* Top Right Ring (Technology) */}
-          <motion.circle 
-            r="45.89" fill="none" stroke={color} strokeWidth="1.5"
-            initial={{ cx: 104, cy: -20, opacity: 0, scale: 1.1, transformOrigin: '50% 50%' }}
-            animate={{ 
-               cx: [104, 64.09, 64.09, 64.09], 
-               cy: [-20, 3.89, 3.89, 3.89], 
-               opacity: [0, 0.4, 0.4, 0],
-               scale: [1.1, 1, 1, 1]
-            }}
-            transition={{ duration: 4.5, times: [0, 0.35, 0.7, 1], ease: ["easeInOut", "linear", "easeInOut"] }}
-          />
-
-          {/* Final Logo Emergence */}
           <motion.path 
             d={pathD} 
-            fill={color} 
-            stroke={color}
-            strokeWidth="0.5"
-            initial={{ scale: 1, pathLength: 0, fillOpacity: 0, transformOrigin: '50% 50%' }}
-            animate={{ 
-               pathLength: [0, 0, 1, 1],
-               fillOpacity: [0, 0, 0, 1],
-            }}
-            transition={{ duration: 4.5, times: [0, 0.35, 0.7, 1], ease: ["linear", "easeInOut", "easeOut"] }}
+            fill={color}
+            initial={{ opacity: 0, scale: 0.85, originX: '50%', originY: '50%' }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           />
         </motion.svg>
       </div>
@@ -120,7 +77,7 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
     return (
       <div key="logo-draw" className={className}>
         <motion.svg
-          viewBox="0 0 56 48"
+          viewBox="0 0 1121 974"
           width={size}
           height={size}
           className="w-full h-auto max-w-full"
@@ -143,7 +100,7 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
     return (
       <div key="logo-outline" className={className}>
         <motion.svg
-          viewBox="0 0 56 48"
+          viewBox="0 0 1121 974"
           width={size}
           height={size}
           className="w-full h-auto max-w-full"
@@ -166,7 +123,7 @@ export default function AlignedLogo({ className = '', size = 400, animated = tru
   return (
     <div ref={containerRef} className={className}>
       <motion.svg
-        viewBox="0 0 56 48"
+        viewBox="0 0 1121 974"
         width={size}
         height={size}
         className="w-full h-auto max-w-full"

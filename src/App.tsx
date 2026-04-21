@@ -9,8 +9,8 @@ import ColorPalette from './components/color-palette/ColorPalette'
 import Typography from './components/typography/Typography'
 import VisualLanguage from './components/visual-language/VisualLanguage'
 import VoiceTone from './components/voice-tone/VoiceTone'
+import Mockups from './components/mockups/Mockups'
 import ClientLanding from './pages/ClientLanding'
-import LogoAlternatives from './pages/LogoAlternatives'
 
 function AnimatedDivider() {
   return (
@@ -41,14 +41,9 @@ function AnimatedDivider() {
 }
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'guidelines' | 'landing' | 'logos'>(() => {
-    const view = new URLSearchParams(window.location.search).get('view')
-    // Landing page hidden temporarily
-    if (view === 'logos') return 'logos'
-    return 'guidelines'
-  })
+  const [currentView, setCurrentView] = useState<'guidelines' | 'landing'>('guidelines')
 
-  const handleViewChange = (view: 'guidelines' | 'landing' | 'logos') => {
+  const handleViewChange = (view: 'guidelines' | 'landing') => {
     setCurrentView(view)
     const basePath = import.meta.env.BASE_URL
     const suffix = view === 'guidelines' ? '' : `?view=${view}`
@@ -96,10 +91,10 @@ export default function App() {
             <AnimatedDivider />
             <VisualLanguage />
             <AnimatedDivider />
+            <Mockups />
+            <AnimatedDivider />
             <VoiceTone />
           </>
-        ) : currentView === 'logos' ? (
-          <LogoAlternatives />
         ) : (
           <ClientLanding />
         )}

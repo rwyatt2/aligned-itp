@@ -194,57 +194,7 @@ function CardDownloadButton({ size = 14 }) {
 export default function LogoSystem() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [downloaded, setDownloaded] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const [isDownloadingMain, setIsDownloadingMain] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { guardDownload } = useDownloadGuard()
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
-
-  const handleDownload = async (format?: string) => {
-    setIsOpen(false);
-    const targetNode = document.getElementById('primary-logo-target');
-    if (!targetNode) return;
-
-    setIsDownloadingMain(true);
-    try {
-      const { toSvg, toPng, toJpeg } = await import('html-to-image');
-      let dataUrl;
-      const typeStr = (format || 'PNG Transparent');
-      const options = { quality: 1, pixelRatio: 3, style: { transform: 'none' } };
-      
-      if (typeStr.includes('SVG')) {
-        dataUrl = await toSvg(targetNode, { ...options, backgroundColor: 'transparent' });
-      } else if (typeStr.includes('PNG')) {
-        dataUrl = await toPng(targetNode, { ...options, backgroundColor: 'transparent' });
-      } else if (typeStr.includes('JPG')) {
-        dataUrl = await toJpeg(targetNode, { ...options, backgroundColor: '#FFFFFF' });
-      }
-      
-      if (dataUrl) {
-         const link = document.createElement('a');
-         const ext = typeStr.includes('SVG') ? 'svg' : typeStr.includes('PNG') ? 'png' : 'jpg';
-         link.download = `aligned-primary-mark.${ext}`;
-         link.href = dataUrl;
-         link.click();
-         setDownloaded(true)
-         setTimeout(() => setDownloaded(false), 2000)
-      }
-    } catch (err) {
-      console.error('Failed to download image', err);
-    } finally {
-      setIsDownloadingMain(false);
-    }
-  }
 
   // Magnetic center logo
   const centerRef = useRef<HTMLDivElement>(null)
@@ -303,59 +253,11 @@ export default function LogoSystem() {
 
           <div className="mt-12 text-center relative z-10 flex flex-col items-center">
             <h3
-              className="text-2xl md:text-4xl font-extrabold tracking-tight mb-3"
+              className="text-2xl md:text-4xl font-extrabold tracking-tight"
               style={{ color: 'var(--text-primary)' }}
             >
               Aligned Technology Partners
             </h3>
-            
-            <div className="relative" ref={containerRef}>
-              <motion.button 
-                onClick={() => setIsOpen(!isOpen)}
-                disabled={isDownloadingMain}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`glass px-6 py-2.5 rounded-lg flex items-center gap-3 text-sm font-semibold tracking-wide border transition-colors ${isDownloadingMain ? 'opacity-70 cursor-wait border-[var(--border-secondary)]' : 'border-[var(--border-primary)] hover:bg-[var(--bg-tertiary)] hover:border-[var(--accent)]'}`}
-                style={{ color: 'var(--text-primary)' }}
-              >
-                {downloaded ? (
-                  <>
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-[#22c55e]">
-                      <Check size={16} strokeWidth={3} />
-                    </motion.div>
-                    Downloaded
-                  </>
-                ) : (
-                  <>
-                     {isDownloadingMain ? <div className="w-4 h-4 rounded-full border-2 border-[var(--text-primary)] border-t-transparent animate-spin" /> : <Download size={16} />}
-                     {isDownloadingMain ? 'Generating...' : 'Download Assets'}
-                  </>
-                )}
-              </motion.button>
-              
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -5, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.1 } }}
-                    className="absolute top-full mt-2 left-1/2 -translate-x-1/2 z-50 glass-panel rounded-xl shadow-2xl border border-[var(--border-secondary)] overflow-hidden min-w-[140px] p-1.5 flex flex-col gap-0.5"
-                    style={{ backgroundColor: 'var(--bg-panel)' }}
-                  >
-                    {['SVG Vector', 'PNG Transparent', 'JPG Studio'].map(format => (
-                      <button
-                        key={format}
-                        onClick={() => guardDownload(() => handleDownload(format))}
-                        className="text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]"
-                        style={{ color: 'var(--text-secondary)' }}
-                      >
-                        {format}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
           </div>
         </motion.div>
 
@@ -503,11 +405,14 @@ export default function LogoSystem() {
              <div className="group rounded-2xl glass-card overflow-hidden flex flex-col">
                <div className="flex items-center justify-center p-8 min-h-[260px] transition-colors duration-300 flex-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                  <div className="flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)] w-full">
-                   <div className="text-[2rem] mt-0.5 tracking-tight">
-                     <span className="font-medium" style={{ color: 'var(--text-primary)' }}>Aligned</span>
-                     <span className="font-light mx-0.5" style={{ color: 'var(--accent)' }}>|</span>
-                     <span className="font-light" style={{ color: 'var(--text-primary)' }}>TP</span>
-                   </div>
+                    <div className="flex items-center gap-2 leading-none">
+                      <span className="text-[2rem] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>Aligned</span>
+                      <span className="text-[2rem] font-light" style={{ color: 'var(--accent)' }}>|</span>
+                      <span className="flex flex-col text-[0.85rem] font-light leading-[1.2] tracking-wide mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                        <span>Technology</span>
+                        <span>Partners</span>
+                      </span>
+                    </div>
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -526,11 +431,14 @@ export default function LogoSystem() {
                    <div className="w-10 shrink-0">
                      <AlignedLogo animated={false} />
                    </div>
-                   <div className="text-[1.65rem] mt-1 tracking-tight">
-                     <span className="font-medium" style={{ color: 'var(--text-primary)' }}>Aligned</span>
-                     <span className="font-light mx-0.5" style={{ color: 'var(--accent)' }}>|</span>
-                     <span className="font-light" style={{ color: 'var(--text-primary)' }}>TP</span>
-                   </div>
+                    <div className="flex items-center gap-2 leading-none">
+                      <span className="text-[1.65rem] font-semibold tracking-tight mt-0.5" style={{ color: 'var(--text-primary)' }}>Aligned</span>
+                      <span className="text-[1.65rem] font-light" style={{ color: 'var(--accent)' }}>|</span>
+                      <span className="flex flex-col text-[0.75rem] font-light leading-[1.2] tracking-wide mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                        <span>Technology</span>
+                        <span>Partners</span>
+                      </span>
+                    </div>
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -549,11 +457,14 @@ export default function LogoSystem() {
                    <div className="w-12">
                      <AlignedLogo animated={false} />
                    </div>
-                   <div className="text-[1.65rem] tracking-tight leading-none">
-                     <span className="font-medium" style={{ color: 'var(--text-primary)' }}>Aligned</span>
-                     <span className="font-light mx-0.5" style={{ color: 'var(--accent)' }}>|</span>
-                     <span className="font-light" style={{ color: 'var(--text-primary)' }}>TP</span>
-                   </div>
+                   <div className="flex items-center gap-2 leading-none">
+                      <span className="text-[1.65rem] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>Aligned</span>
+                      <span className="text-[1.65rem] font-light" style={{ color: 'var(--accent)' }}>|</span>
+                      <span className="flex flex-col text-[0.75rem] font-light leading-[1.2] tracking-wide mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                        <span>Technology</span>
+                        <span>Partners</span>
+                      </span>
+                    </div>
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -568,13 +479,13 @@ export default function LogoSystem() {
              {/* 4. Primary Horizontal */}
              <div className="group rounded-2xl glass-card overflow-hidden flex flex-col md:col-span-2 lg:col-span-1">
                <div className="flex items-center justify-center p-8 min-h-[260px] transition-colors duration-300 flex-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
-                 <div className="flex items-center gap-4 transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)] max-w-full overflow-hidden">
-                   <div className="w-8 shrink-0">
-                     <AlignedLogo animated={false} />
-                   </div>
-                   <div className="text-[1rem] sm:text-lg font-medium tracking-tight mt-1 leading-none whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-primary)' }}>
-                     Aligned Technology Partners
-                   </div>
+                 <div className="flex items-center gap-4 transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)]">
+                    <div className="w-12 shrink-0">
+                      <AlignedLogo animated={false} />
+                    </div>
+                    <span className="text-xl font-medium tracking-tight whitespace-nowrap" style={{ color: 'var(--text-primary)' }}>
+                      Aligned Technology Partners
+                    </span>
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">

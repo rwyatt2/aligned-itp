@@ -72,7 +72,7 @@ export default function VoiceTone() {
   return (
     <SectionWrapper
       id="voice-tone"
-      kicker="05 — Voice & Tone"
+      kicker="06 — Voice & Tone"
       title="How We Speak"
       subtitle="Every word reflects our archetype blend: the wisdom of a Sage, the direction of a Guide, and the authority of a Ruler."
     >
