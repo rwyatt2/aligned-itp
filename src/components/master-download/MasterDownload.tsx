@@ -17,7 +17,7 @@ export default function MasterDownloadButton() {
   const [state, setState] = useState<'idle' | 'building' | 'done' | 'error'>('idle')
   const [progress, setProgress] = useState<ZipProgress>({ step: '', percent: 0 })
   const [showTooltip, setShowTooltip] = useState(false)
-  const tooltipTimeout = useRef<ReturnType<typeof setTimeout>>()
+  const tooltipTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     return () => {
