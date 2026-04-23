@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { Sun, Moon, Menu, X } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
+import MasterDownloadButton from '../master-download/MasterDownload'
 
 const guidelineSections = [
   { id: 'hero', label: 'Home' },
@@ -150,6 +151,9 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
                   </motion.div>
                 </AnimatePresence>
               </button>
+
+              {/* Master Download */}
+              <MasterDownloadButton />
 
               {/* Mobile Menu Toggle */}
               {(
