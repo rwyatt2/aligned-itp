@@ -4,10 +4,17 @@
  * Generates clean, production-ready SVG markup strings for the logomark,
  * and HTML markup strings for all lockup/wordmark variants.
  *
- * Lockups use HTML + flexbox (identical to the guidelines page) so the
- * browser handles text measurement — no guessed x-coordinates.
- * They are rendered to PNG via html-to-image in generateBrandZip.ts.
+ * All typography metrics come from the shared `lockupSpec` (the single source
+ * of truth), so the SVG and PNG exports are pixel-identical to the live page
+ * and to the EPS exports. Lockups use HTML + flexbox (identical to the
+ * guidelines page) so the browser handles text measurement.
  */
+
+import {
+  LOCKUP_SPECS,
+  type PipeWordmarkSpec,
+  type TextStyle,
+} from './lockupSpec'
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -77,14 +84,87 @@ export function buildLogomarkSvg(fill: string): string {
   return svgWrap(1121, 974, `  <path d="${LOGO_PATH}" fill="${fill}" />`)
 }
 
+// ─── Shared inline-style helper (consumes lockupSpec) ───────────────────────
+
+function css(style: TextStyle, color: string, extra = ''): string {
+  return `font-size:${style.fontSizePx}px;font-weight:${style.weight};letter-spacing:${style.letterSpacingEm}em;line-height:${style.lineHeight};color:${color};${extra}`
+}
+
+function markBox(widthPx: number, color: string): string {
+  return `<div style="width:${widthPx}px;flex-shrink:0;color:${color};">${INLINE_LOGO_SVG}</div>`
+}
+
+/**
+ * The pipe-divider wordmark fragment ("Aligned | Technology Partners"),
+ * built entirely from the shared spec.
+ */
+function pipeWordmark(textFill: string, dividerFill: string, p: PipeWordmarkSpec): string {
+  const alignedExtra = p.alignedMarginTopPx ? `margin-top:${p.alignedMarginTopPx}px;` : ''
+  return `
+    <div style="display:flex;align-items:center;gap:${p.gapPx}px;line-height:1;">
+      <span style="${css(p.aligned, textFill, alignedExtra)}">Aligned</span>
+      <span style="${css(p.pipe, dividerFill)}">|</span>
+      <span style="display:flex;flex-direction:column;${css(p.subtitle, textFill, `margin-top:${p.subtitleMarginTopPx}px;`)}">
+        <span>${p.subtitleLines[0]}</span>
+        <span>${p.subtitleLines[1]}</span>
+      </span>
+    </div>
+  `
+}
+
+// ─── Inner content builders (shared by HTML + SVG) ──────────────────────────
+
+function wordmarkInner(textFill: string, dividerFill: string): string {
+  const p = LOCKUP_SPECS.Wordmark.pipe!
+  return `<div style="display:flex;align-items:center;height:60px;padding:0 8px;">${pipeWordmark(textFill, dividerFill, p)}</div>`
+}
+
+function compactHorizontalInner(scheme: LockupColorScheme): string {
+  const s = LOCKUP_SPECS.CompactHorizontal
+  return `<div style="display:flex;align-items:center;gap:${s.gapPx}px;height:80px;padding:0 8px;">
+    ${markBox(s.markWidthPx!, scheme.markFill)}
+    ${pipeWordmark(scheme.textFill, scheme.dividerFill, s.pipe!)}
+  </div>`
+}
+
+function compactStackedInner(scheme: LockupColorScheme): string {
+  const s = LOCKUP_SPECS.CompactStacked
+  return `<div style="display:flex;flex-direction:column;align-items:center;gap:${s.gapPx}px;padding:12px 8px;">
+    <div style="width:${s.markWidthPx}px;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
+    ${pipeWordmark(scheme.textFill, scheme.dividerFill, s.pipe!)}
+  </div>`
+}
+
+function primaryHorizontalInner(scheme: LockupColorScheme): string {
+  const s = LOCKUP_SPECS.PrimaryHorizontal
+  const sl = s.singleLine!
+  return `<div style="display:flex;align-items:center;gap:${s.gapPx}px;height:70px;padding:0 8px;">
+    ${markBox(s.markWidthPx!, scheme.markFill)}
+    <span style="${css(sl.style, scheme.textFill, 'white-space:nowrap;')}">${sl.text}</span>
+  </div>`
+}
+
+function detailedHorizontalInner(scheme: LockupColorScheme): string {
+  const s = LOCKUP_SPECS.DetailedHorizontal
+  const b = s.block!
+  const lines = b.lines.map((l) => `<span>${l}</span>`).join('')
+  return `<div style="display:flex;align-items:center;gap:${s.gapPx}px;height:130px;padding:0 8px;">
+    ${markBox(s.markWidthPx!, scheme.markFill)}
+    <div style="display:flex;flex-direction:column;${css(b.style, scheme.textFill)}">${lines}</div>
+  </div>`
+}
+
+function detailedStackedInner(scheme: LockupColorScheme): string {
+  const s = LOCKUP_SPECS.DetailedStacked
+  const b = s.block!
+  const lines = b.lines.map((l) => `<span>${l}</span>`).join('')
+  return `<div style="display:flex;flex-direction:column;align-items:center;gap:${s.gapPx}px;padding:12px 8px;">
+    <div style="width:${s.markWidthPx}px;flex-shrink:0;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
+    <div style="display:flex;flex-direction:column;align-items:center;${css(b.style, scheme.textFill)}">${lines}</div>
+  </div>`
+}
+
 // ─── HTML Lockup Builders ───────────────────────────────────────────────────
-//
-// These return HTML strings that replicate the EXACT same flexbox layout used
-// on the guidelines page. The browser's text layout engine handles spacing,
-// so "Aligned | Technology Partners" renders pixel-perfect.
-//
-// Each builder returns { html, width, height } so the renderer knows the
-// canvas dimensions.
 
 export interface LockupHtmlResult {
   html: string
@@ -92,10 +172,6 @@ export interface LockupHtmlResult {
   height: number
 }
 
-/**
- * Shared font-face declarations for lockup HTML.
- * We load Inter as a web fallback; Geist will be inherited if available.
- */
 function fontStyle(): string {
   return `
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600&display=swap');
@@ -104,142 +180,35 @@ function fontStyle(): string {
   `
 }
 
-/**
- * The pipe-divider wordmark fragment used across compact lockups.
- *
- * Exactly mirrors the guidelines page:
- *   <div class="flex items-center gap-2 leading-none">
- *     <span class="aligned">Aligned</span>
- *     <span class="pipe">|</span>
- *     <span class="subtitle-col">Technology<br/>Partners</span>
- *   </div>
- */
-function pipeWordmark(
-  textFill: string,
-  dividerFill: string,
-  alignedSize: string,
-  subtitleSize: string,
-): string {
-  return `
-    <div style="display:flex;align-items:center;gap:8px;line-height:1;">
-      <span style="font-size:${alignedSize};font-weight:600;letter-spacing:-0.04em;color:${textFill};">Aligned</span>
-      <span style="font-size:${alignedSize};font-weight:300;color:${dividerFill};">|</span>
-      <span style="display:flex;flex-direction:column;font-size:${subtitleSize};font-weight:300;line-height:1.2;letter-spacing:0.03em;color:${textFill};padding-top:2px;">
-        <span>Technology</span>
-        <span>Partners</span>
-      </span>
-    </div>
-  `
+function htmlDoc(inner: string): string {
+  return `<html><head><style>${fontStyle()}</style></head><body>${inner}</body></html>`
 }
 
-/**
- * Wordmark only — "Aligned | Technology Partners"
- */
 export function buildWordmarkHtml(textFill: string, dividerFill: string): LockupHtmlResult {
-  return {
-    width: 360,
-    height: 60,
-    html: `<html><head><style>${fontStyle()}</style></head><body>
-      <div style="display:flex;align-items:center;height:60px;padding:0 8px;">
-        ${pipeWordmark(textFill, dividerFill, '42px', '14px')}
-      </div>
-    </body></html>`,
-  }
+  return { width: 360, height: 60, html: htmlDoc(wordmarkInner(textFill, dividerFill)) }
 }
 
-/**
- * Compact Horizontal: mark + "Aligned | Technology Partners"
- */
 export function buildCompactHorizontalHtml(scheme: LockupColorScheme): LockupHtmlResult {
-  return {
-    width: 440,
-    height: 80,
-    html: `<html><head><style>${fontStyle()}</style></head><body>
-      <div style="display:flex;align-items:center;gap:16px;height:80px;padding:0 8px;">
-        <div style="width:56px;flex-shrink:0;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-        ${pipeWordmark(scheme.textFill, scheme.dividerFill, '32px', '13px')}
-      </div>
-    </body></html>`,
-  }
+  return { width: 440, height: 80, html: htmlDoc(compactHorizontalInner(scheme)) }
 }
 
-/**
- * Compact Stacked: mark centered above "Aligned | Technology Partners"
- */
 export function buildCompactStackedHtml(scheme: LockupColorScheme): LockupHtmlResult {
-  return {
-    width: 360,
-    height: 160,
-    html: `<html><head><style>${fontStyle()}</style></head><body>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:12px 8px;">
-        <div style="width:60px;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-        ${pipeWordmark(scheme.textFill, scheme.dividerFill, '32px', '13px')}
-      </div>
-    </body></html>`,
-  }
+  return { width: 360, height: 160, html: htmlDoc(compactStackedInner(scheme)) }
 }
 
-/**
- * Primary Horizontal: mark + "Aligned Technology Partners" (single line)
- */
 export function buildPrimaryHorizontalHtml(scheme: LockupColorScheme): LockupHtmlResult {
-  return {
-    width: 480,
-    height: 70,
-    html: `<html><head><style>${fontStyle()}</style></head><body>
-      <div style="display:flex;align-items:center;gap:16px;height:70px;padding:0 8px;">
-        <div style="width:52px;flex-shrink:0;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-        <span style="font-size:24px;font-weight:500;letter-spacing:-0.02em;white-space:nowrap;color:${scheme.textFill};">Aligned Technology Partners</span>
-      </div>
-    </body></html>`,
-  }
+  return { width: 480, height: 70, html: htmlDoc(primaryHorizontalInner(scheme)) }
 }
 
-/**
- * Detailed Horizontal: larger mark + stacked company name
- */
 export function buildDetailedHorizontalHtml(scheme: LockupColorScheme): LockupHtmlResult {
-  return {
-    width: 420,
-    height: 130,
-    html: `<html><head><style>${fontStyle()}</style></head><body>
-      <div style="display:flex;align-items:center;gap:24px;height:130px;padding:0 8px;">
-        <div style="width:80px;flex-shrink:0;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-        <div style="display:flex;flex-direction:column;font-size:28px;font-weight:500;line-height:1.2;letter-spacing:-0.02em;color:${scheme.textFill};">
-          <span>Aligned</span>
-          <span>Technology</span>
-          <span>Partners</span>
-        </div>
-      </div>
-    </body></html>`,
-  }
+  return { width: 420, height: 130, html: htmlDoc(detailedHorizontalInner(scheme)) }
 }
 
-/**
- * Detailed Stacked: mark centered above stacked company name (centered)
- */
 export function buildDetailedStackedHtml(scheme: LockupColorScheme): LockupHtmlResult {
-  return {
-    width: 300,
-    height: 230,
-    html: `<html><head><style>${fontStyle()}</style></head><body>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:12px 8px;">
-        <div style="width:72px;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-        <div style="display:flex;flex-direction:column;align-items:center;font-size:28px;font-weight:500;line-height:1.2;letter-spacing:-0.02em;color:${scheme.textFill};">
-          <span>Aligned</span>
-          <span>Technology</span>
-          <span>Partners</span>
-        </div>
-      </div>
-    </body></html>`,
-  }
+  return { width: 300, height: 230, html: htmlDoc(detailedStackedInner(scheme)) }
 }
 
 // ─── SVG Lockup Builders (foreignObject) ────────────────────────────────────
-//
-// These produce proper .svg files by embedding the same HTML flexbox layout
-// inside an SVG <foreignObject>. This lets the rendering engine handle text
-// measurement automatically — no hardcoded x-coordinates.
 
 function lockupSvgWrap(width: number, height: number, htmlContent: string): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -258,64 +227,27 @@ function lockupSvgWrap(width: number, height: number, htmlContent: string): stri
 }
 
 export function buildWordmarkSvg(textFill: string, dividerFill: string): string {
-  return lockupSvgWrap(360, 60, `
-    <div style="display:flex;align-items:center;height:60px;padding:0 8px;">
-      ${pipeWordmark(textFill, dividerFill, '42px', '14px')}
-    </div>
-  `)
+  return lockupSvgWrap(360, 60, wordmarkInner(textFill, dividerFill))
 }
 
 export function buildCompactHorizontalSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(440, 80, `
-    <div style="display:flex;align-items:center;gap:16px;height:80px;padding:0 8px;">
-      <div style="width:56px;flex-shrink:0;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-      ${pipeWordmark(scheme.textFill, scheme.dividerFill, '32px', '13px')}
-    </div>
-  `)
+  return lockupSvgWrap(440, 80, compactHorizontalInner(scheme))
 }
 
 export function buildCompactStackedSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(360, 160, `
-    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:12px 8px;">
-      <div style="width:60px;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-      ${pipeWordmark(scheme.textFill, scheme.dividerFill, '32px', '13px')}
-    </div>
-  `)
+  return lockupSvgWrap(360, 160, compactStackedInner(scheme))
 }
 
 export function buildPrimaryHorizontalSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(480, 70, `
-    <div style="display:flex;align-items:center;gap:16px;height:70px;padding:0 8px;">
-      <div style="width:52px;flex-shrink:0;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-      <span style="font-size:24px;font-weight:500;letter-spacing:-0.02em;white-space:nowrap;color:${scheme.textFill};">Aligned Technology Partners</span>
-    </div>
-  `)
+  return lockupSvgWrap(480, 70, primaryHorizontalInner(scheme))
 }
 
 export function buildDetailedHorizontalSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(420, 130, `
-    <div style="display:flex;align-items:center;gap:24px;height:130px;padding:0 8px;">
-      <div style="width:80px;flex-shrink:0;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-      <div style="display:flex;flex-direction:column;font-size:28px;font-weight:500;line-height:1.2;letter-spacing:-0.02em;color:${scheme.textFill};">
-        <span>Aligned</span>
-        <span>Technology</span>
-        <span>Partners</span>
-      </div>
-    </div>
-  `)
+  return lockupSvgWrap(420, 130, detailedHorizontalInner(scheme))
 }
 
 export function buildDetailedStackedSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(300, 230, `
-    <div style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:12px 8px;">
-      <div style="width:72px;color:${scheme.markFill};">${INLINE_LOGO_SVG}</div>
-      <div style="display:flex;flex-direction:column;align-items:center;font-size:28px;font-weight:500;line-height:1.2;letter-spacing:-0.02em;color:${scheme.textFill};">
-        <span>Aligned</span>
-        <span>Technology</span>
-        <span>Partners</span>
-      </div>
-    </div>
-  `)
+  return lockupSvgWrap(300, 230, detailedStackedInner(scheme))
 }
 
 // ─── Public API ─────────────────────────────────────────────────────────────
@@ -330,4 +262,3 @@ export const LOCKUP_TYPES: LockupType[] = [
   'DetailedHorizontal',
   'DetailedStacked',
 ]
-

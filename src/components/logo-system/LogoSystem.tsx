@@ -4,6 +4,11 @@ import { Check, X, AlertTriangle, Download } from 'lucide-react'
 import { useDownloadGuard } from '../../context/DownloadGuardContext'
 import SectionWrapper from '../layout/SectionWrapper'
 import AlignedLogo from '../hero/AlignedLogo'
+import Lockup from './Lockup'
+import { LOCKUP_COLOR_SCHEMES } from '../../lib/logoSvgBuilder'
+import type { EpsSource } from '../../lib/epsGenerator'
+
+const DEFAULT_SCHEME = LOCKUP_COLOR_SCHEMES[0]
 
 interface LogoRuleProps {
   correct: boolean
@@ -94,7 +99,7 @@ function LogoRule({ correct, label, description, children }: LogoRuleProps) {
   )
 }
 
-function CardDownloadButton({ size = 14 }) {
+function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource?: EpsSource }) {
   const [downloaded, setDownloaded] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -114,8 +119,34 @@ function CardDownloadButton({ size = 14 }) {
   const handleDownload = async (e: React.MouseEvent, type: string) => {
     e.stopPropagation()
     setIsOpen(false)
-    
+
     const cardBottomContainer = containerRef.current?.parentElement;
+    const titleNode = cardBottomContainer?.querySelector('.font-bold');
+    const name = titleNode?.textContent?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'logo';
+
+    // EPS is true vector — generated from the shared spec, not a DOM snapshot.
+    if (type === 'EPS') {
+      if (!epsSource) return;
+      setIsDownloading(true);
+      try {
+        const { buildEps, epsToBlob } = await import('../../lib/epsGenerator');
+        const eps = await buildEps(epsSource);
+        const url = URL.createObjectURL(epsToBlob(eps));
+        const link = document.createElement('a');
+        link.download = `aligned-${name}.eps`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+        setDownloaded(true);
+        setTimeout(() => setDownloaded(false), 2000);
+      } catch (err) {
+        console.error('Failed to download EPS', err);
+      } finally {
+        setIsDownloading(false);
+      }
+      return;
+    }
+
     const targetNode = cardBottomContainer?.previousElementSibling as HTMLElement;
     if (!targetNode) return;
 
@@ -138,8 +169,6 @@ function CardDownloadButton({ size = 14 }) {
       
       if (dataUrl) {
          const link = document.createElement('a');
-         const titleNode = cardBottomContainer?.querySelector('.font-bold');
-         const name = titleNode?.textContent?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'logo';
          link.download = `aligned-${name}.${type.toLowerCase()}`;
          link.href = dataUrl;
          link.click();
@@ -174,7 +203,7 @@ function CardDownloadButton({ size = 14 }) {
             className="absolute right-0 bottom-full mb-2 z-50 glass-panel rounded-xl shadow-2xl border border-[var(--border-secondary)] overflow-hidden min-w-[100px] p-1.5 flex flex-col gap-0.5"
             style={{ backgroundColor: 'var(--bg-panel)' }}
           >
-            {['SVG', 'PNG', 'JPG'].map(format => (
+            {['SVG', 'PNG', 'JPG', 'EPS'].map(format => (
               <button
                 key={format}
                 onClick={(e) => { e.stopPropagation(); guardDownload(() => handleDownload(e, format)) }}
@@ -285,7 +314,7 @@ export default function LogoSystem() {
                    <div className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: 'var(--text-primary)' }}>Kinetic</div>
                    <div className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Primary Accent</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'logomark', fill: '#FF5E20' }} />
                </div>
             </div>
 
@@ -298,7 +327,7 @@ export default function LogoSystem() {
                    <div className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: 'var(--text-primary)' }}>Pristine</div>
                    <div className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Reverse on Dark</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'logomark', fill: '#FFFFFF' }} />
                </div>
             </div>
 
@@ -311,7 +340,7 @@ export default function LogoSystem() {
                    <div className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: 'var(--text-primary)' }}>Void</div>
                    <div className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Positive on Light</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'logomark', fill: '#0A0A0F' }} />
                </div>
             </div>
 
@@ -324,7 +353,7 @@ export default function LogoSystem() {
                    <div className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: 'var(--text-primary)' }}>Industrial</div>
                    <div className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Slate Variant</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'logomark', fill: '#324458' }} />
                </div>
             </div>
 
@@ -337,7 +366,7 @@ export default function LogoSystem() {
                    <div className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: 'var(--text-primary)' }}>Kinetic Inverse</div>
                    <div className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Reversed on Accent</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'logomark', fill: '#FFFFFF' }} />
                </div>
             </div>
 
@@ -350,7 +379,7 @@ export default function LogoSystem() {
                    <div className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: 'var(--text-primary)' }}>Cool Gray</div>
                    <div className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Soft Tone on Dark</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'logomark', fill: '#B0CEE2' }} />
                </div>
             </div>
 
@@ -363,7 +392,7 @@ export default function LogoSystem() {
                    <div className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: 'var(--text-primary)' }}>Charcoal</div>
                    <div className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Graphite Variant</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'logomark', fill: '#2A2A35' }} />
                </div>
             </div>
 
@@ -376,7 +405,7 @@ export default function LogoSystem() {
                    <div className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: 'var(--text-primary)' }}>Industrial Mono</div>
                    <div className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Slate on Slate</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'logomark', fill: '#90B6D5' }} />
                </div>
             </div>
           </div>
@@ -403,14 +432,7 @@ export default function LogoSystem() {
              <div className="group rounded-2xl glass-card overflow-hidden flex flex-col">
                <div className="flex items-center justify-center p-8 min-h-[260px] transition-colors duration-300 flex-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                  <div className="flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)] w-full">
-                    <div className="flex items-center gap-2 leading-none">
-                      <span className="text-[2rem] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>Aligned</span>
-                      <span className="text-[2rem] font-light" style={{ color: 'var(--accent)' }}>|</span>
-                      <span className="flex flex-col text-[0.85rem] font-light leading-[1.2] tracking-wide mt-0.5" style={{ color: 'var(--text-primary)' }}>
-                        <span>Technology</span>
-                        <span>Partners</span>
-                      </span>
-                    </div>
+                   <Lockup kind="Wordmark" />
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -418,7 +440,7 @@ export default function LogoSystem() {
                    <div className="text-sm font-bold tracking-tight mb-1" style={{ color: 'var(--text-primary)' }}>Wordmark</div>
                    <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Standalone typography for highly restricted spaces.</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'lockup', type: 'Wordmark', scheme: DEFAULT_SCHEME }} />
                </div>
              </div>
 
@@ -426,17 +448,7 @@ export default function LogoSystem() {
              <div className="group rounded-2xl glass-card overflow-hidden flex flex-col">
                <div className="flex items-center justify-center p-8 min-h-[260px] transition-colors duration-300 flex-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                  <div className="flex items-center gap-4 transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)]">
-                   <div className="w-10 shrink-0">
-                     <AlignedLogo animated={false} />
-                   </div>
-                    <div className="flex items-center gap-2 leading-none">
-                      <span className="text-[1.65rem] font-semibold tracking-tight mt-0.5" style={{ color: 'var(--text-primary)' }}>Aligned</span>
-                      <span className="text-[1.65rem] font-light" style={{ color: 'var(--accent)' }}>|</span>
-                      <span className="flex flex-col text-[0.75rem] font-light leading-[1.2] tracking-wide mt-0.5" style={{ color: 'var(--text-primary)' }}>
-                        <span>Technology</span>
-                        <span>Partners</span>
-                      </span>
-                    </div>
+                  <Lockup kind="CompactHorizontal" />
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -444,7 +456,7 @@ export default function LogoSystem() {
                    <div className="text-sm font-bold tracking-tight mb-1" style={{ color: 'var(--text-primary)' }}>Compact Horizontal</div>
                    <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Space-saving design for navigation bars and UI headers.</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'lockup', type: 'CompactHorizontal', scheme: DEFAULT_SCHEME }} />
                </div>
              </div>
 
@@ -452,17 +464,7 @@ export default function LogoSystem() {
              <div className="group rounded-2xl glass-card overflow-hidden flex flex-col">
                <div className="flex items-center justify-center p-8 min-h-[260px] transition-colors duration-300 flex-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                  <div className="flex flex-col items-center gap-5 transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)]">
-                   <div className="w-12">
-                     <AlignedLogo animated={false} />
-                   </div>
-                   <div className="flex items-center gap-2 leading-none">
-                      <span className="text-[1.65rem] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>Aligned</span>
-                      <span className="text-[1.65rem] font-light" style={{ color: 'var(--accent)' }}>|</span>
-                      <span className="flex flex-col text-[0.75rem] font-light leading-[1.2] tracking-wide mt-0.5" style={{ color: 'var(--text-primary)' }}>
-                        <span>Technology</span>
-                        <span>Partners</span>
-                      </span>
-                    </div>
+                  <Lockup kind="CompactStacked" />
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -470,7 +472,7 @@ export default function LogoSystem() {
                    <div className="text-sm font-bold tracking-tight mb-1" style={{ color: 'var(--text-primary)' }}>Compact Stacked</div>
                    <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Optimized for avatars, social media, and square constraints.</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'lockup', type: 'CompactStacked', scheme: DEFAULT_SCHEME }} />
                </div>
              </div>
 
@@ -478,12 +480,7 @@ export default function LogoSystem() {
              <div className="group rounded-2xl glass-card overflow-hidden flex flex-col md:col-span-2 lg:col-span-1">
                <div className="flex items-center justify-center p-8 min-h-[260px] transition-colors duration-300 flex-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                  <div className="flex items-center gap-4 transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)]">
-                    <div className="w-12 shrink-0">
-                      <AlignedLogo animated={false} />
-                    </div>
-                    <span className="text-xl font-medium tracking-tight whitespace-nowrap" style={{ color: 'var(--text-primary)' }}>
-                      Aligned Technology Partners
-                    </span>
+                   <Lockup kind="PrimaryHorizontal" />
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -491,7 +488,7 @@ export default function LogoSystem() {
                    <div className="text-sm font-bold tracking-tight mb-1" style={{ color: 'var(--text-primary)' }}>Primary Horizontal</div>
                    <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Standard configuration for documents and wide banners.</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'lockup', type: 'PrimaryHorizontal', scheme: DEFAULT_SCHEME }} />
                </div>
              </div>
 
@@ -499,14 +496,7 @@ export default function LogoSystem() {
              <div className="group rounded-2xl glass-card overflow-hidden flex flex-col">
                <div className="flex items-center justify-center p-8 min-h-[260px] transition-colors duration-300 flex-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                  <div className="flex items-center gap-6 transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)]">
-                   <div className="w-20 shrink-0">
-                     <AlignedLogo animated={false} />
-                   </div>
-                   <div className="flex flex-col text-[1.4rem] font-medium leading-[1.2] tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                     <span>Aligned</span>
-                     <span>Technology</span>
-                     <span>Partners</span>
-                   </div>
+                  <Lockup kind="DetailedHorizontal" />
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -514,7 +504,7 @@ export default function LogoSystem() {
                    <div className="text-sm font-bold tracking-tight mb-1" style={{ color: 'var(--text-primary)' }}>Detailed Horizontal</div>
                    <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Formal block layout for title pages and large covers.</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'lockup', type: 'DetailedHorizontal', scheme: DEFAULT_SCHEME }} />
                </div>
              </div>
 
@@ -522,14 +512,7 @@ export default function LogoSystem() {
              <div className="group rounded-2xl glass-card overflow-hidden flex flex-col">
                <div className="flex items-center justify-center p-8 min-h-[260px] transition-colors duration-300 flex-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                  <div className="flex flex-col items-center gap-6 transform group-hover:scale-105 transition-transform duration-500 ease-[var(--ease-bounce)]">
-                   <div className="w-16 shrink-0">
-                     <AlignedLogo animated={false} />
-                   </div>
-                   <div className="flex flex-col items-center text-[1.4rem] font-medium leading-[1.2] tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                     <span>Aligned</span>
-                     <span>Technology</span>
-                     <span>Partners</span>
-                   </div>
+                  <Lockup kind="DetailedStacked" />
                  </div>
                </div>
                <div className="p-5 border-t border-[var(--border-secondary)] bg-[var(--bg-panel)] flex items-start justify-between gap-3">
@@ -537,7 +520,7 @@ export default function LogoSystem() {
                    <div className="text-sm font-bold tracking-tight mb-1" style={{ color: 'var(--text-primary)' }}>Detailed Stacked</div>
                    <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Centered formal arrangement for vertical applications.</div>
                  </div>
-                 <CardDownloadButton />
+                 <CardDownloadButton epsSource={{ kind: 'lockup', type: 'DetailedStacked', scheme: DEFAULT_SCHEME }} />
                </div>
              </div>
            </div>

@@ -29,6 +29,8 @@ import {
   LOGOMARK_VARIANTS,
   LOCKUP_COLOR_SCHEMES,
 } from './logoSvgBuilder'
+import { buildLogomarkEps, buildLockupEps } from './epsGenerator'
+import type { LockupKind } from './lockupSpec'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -65,8 +67,9 @@ by asset type for easy navigation.
 CONTENTS
 --------
 01_Logos/        Logomark, Wordmark, and Lockup configurations
-                 in SVG and PNG formats across all approved
-                 color variants.
+                 in SVG, PNG, and EPS formats across all approved
+                 color variants. EPS files are fully vector and
+                 print-ready (all text converted to outlines).
 
 02_Fonts/        Geist Sans and Geist Mono typefaces in
                  OTF, TTF, and WOFF2 formats.
@@ -315,12 +318,27 @@ export async function generateBrandZip(onProgress?: ProgressCallback): Promise<B
     }
   }
 
-  // ── 4. Logos — Wordmark SVG + PNG ─────────────────────────────────────
+  // ── 3b. Logos — Logomark EPS (true vector) ───────────────────────────
+  report('Building logomark EPS…', 16)
+  for (const variant of LOGOMARK_VARIANTS) {
+    const eps = buildLogomarkEps(variant.fill, `Aligned Logomark — ${variant.name}`)
+    zip.file(`${ROOT}/01_Logos/Logomark/EPS/ATP-Logomark-${variant.slug}.eps`, eps)
+  }
+
+  // ── 4. Logos — Wordmark SVG + PNG + EPS ───────────────────────────────
   report('Building wordmarks…', 20)
   for (const scheme of LOCKUP_COLOR_SCHEMES) {
     // SVG (foreignObject-based — browser handles text spacing)
     const svg = buildWordmarkSvg(scheme.textFill, scheme.dividerFill)
     zip.file(`${ROOT}/01_Logos/Wordmark/SVG/ATP-Wordmark-${scheme.slug}.svg`, svg)
+
+    // EPS (true vector — text outlined via opentype)
+    try {
+      const eps = await buildLockupEps('Wordmark', scheme, `Aligned Wordmark — ${scheme.name}`)
+      zip.file(`${ROOT}/01_Logos/Wordmark/EPS/ATP-Wordmark-${scheme.slug}.eps`, eps)
+    } catch {
+      console.warn(`Failed to render EPS for wordmark ${scheme.slug}`)
+    }
 
     // PNG (html-to-image rendered)
     const result = buildWordmarkHtml(scheme.textFill, scheme.dividerFill)
@@ -350,6 +368,14 @@ export async function generateBrandZip(onProgress?: ProgressCallback): Promise<B
       // SVG
       const svg = lockup.svgBuilder(scheme)
       zip.file(`${ROOT}/01_Logos/Lockups/SVG/ATP-${lockup.name}-${scheme.slug}.svg`, svg)
+
+      // EPS (true vector — text outlined via opentype)
+      try {
+        const eps = await buildLockupEps(lockup.name as LockupKind, scheme, `Aligned ${lockup.name} — ${scheme.name}`)
+        zip.file(`${ROOT}/01_Logos/Lockups/EPS/ATP-${lockup.name}-${scheme.slug}.eps`, eps)
+      } catch {
+        console.warn(`Failed to render EPS for lockup ${lockup.name}-${scheme.slug}`)
+      }
 
       // PNG
       const result = lockup.htmlBuilder(scheme)
