@@ -147,18 +147,61 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
       return;
     }
 
+    // SVG is true vector — generated from the shared spec, not a DOM snapshot.
+    if (type === 'SVG') {
+      if (!epsSource) return;
+      setIsDownloading(true);
+      try {
+        const {
+          buildLogomarkSvg,
+          buildWordmarkSvg,
+          buildCompactHorizontalSvg,
+          buildCompactStackedSvg,
+          buildPrimaryHorizontalSvg,
+          buildDetailedHorizontalSvg,
+          buildDetailedStackedSvg,
+        } = await import('../../lib/logoSvgBuilder');
+        let svgString: string;
+        if (epsSource.kind === 'logomark') {
+          svgString = buildLogomarkSvg(epsSource.fill);
+        } else {
+          const { scheme } = epsSource;
+          switch (epsSource.type) {
+            case 'Wordmark':           svgString = buildWordmarkSvg(scheme.textFill, scheme.dividerFill); break;
+            case 'CompactHorizontal':  svgString = buildCompactHorizontalSvg(scheme); break;
+            case 'CompactStacked':     svgString = buildCompactStackedSvg(scheme); break;
+            case 'PrimaryHorizontal':  svgString = buildPrimaryHorizontalSvg(scheme); break;
+            case 'DetailedHorizontal': svgString = buildDetailedHorizontalSvg(scheme); break;
+            case 'DetailedStacked':    svgString = buildDetailedStackedSvg(scheme); break;
+          }
+        }
+        const blob = new Blob([svgString!], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `aligned-${name}.svg`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+        setDownloaded(true);
+        setTimeout(() => setDownloaded(false), 2000);
+      } catch (err) {
+        console.error('Failed to download SVG', err);
+      } finally {
+        setIsDownloading(false);
+      }
+      return;
+    }
+
     const targetNode = cardBottomContainer?.previousElementSibling as HTMLElement;
     if (!targetNode) return;
 
     setIsDownloading(true);
     try {
-      const { toSvg, toPng, toJpeg } = await import('html-to-image');
+      const { toPng, toJpeg } = await import('html-to-image');
       let dataUrl;
       const options = { quality: 1, pixelRatio: 3, style: { transform: 'none' } };
       
-      if (type === 'SVG') {
-        dataUrl = await toSvg(targetNode, { ...options, backgroundColor: 'transparent' });
-      } else if (type === 'PNG') {
+      if (type === 'PNG') {
         dataUrl = await toPng(targetNode, { ...options, backgroundColor: 'transparent' });
       } else if (type === 'JPG') {
         const computedStyle = window.getComputedStyle(targetNode);
