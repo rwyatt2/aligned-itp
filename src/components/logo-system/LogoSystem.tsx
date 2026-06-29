@@ -152,30 +152,15 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
       if (!epsSource) return;
       setIsDownloading(true);
       try {
-        const {
-          buildLogomarkSvg,
-          buildWordmarkSvg,
-          buildCompactHorizontalSvg,
-          buildCompactStackedSvg,
-          buildPrimaryHorizontalSvg,
-          buildDetailedHorizontalSvg,
-          buildDetailedStackedSvg,
-        } = await import('../../lib/logoSvgBuilder');
         let svgString: string;
         if (epsSource.kind === 'logomark') {
+          const { buildLogomarkSvg } = await import('../../lib/logoSvgBuilder');
           svgString = buildLogomarkSvg(epsSource.fill);
         } else {
-          const { scheme } = epsSource;
-          switch (epsSource.type) {
-            case 'Wordmark':           svgString = buildWordmarkSvg(scheme.textFill, scheme.dividerFill); break;
-            case 'CompactHorizontal':  svgString = buildCompactHorizontalSvg(scheme); break;
-            case 'CompactStacked':     svgString = buildCompactStackedSvg(scheme); break;
-            case 'PrimaryHorizontal':  svgString = buildPrimaryHorizontalSvg(scheme); break;
-            case 'DetailedHorizontal': svgString = buildDetailedHorizontalSvg(scheme); break;
-            case 'DetailedStacked':    svgString = buildDetailedStackedSvg(scheme); break;
-          }
+          const { buildLockupSvg } = await import('../../lib/epsGenerator');
+          svgString = await buildLockupSvg(epsSource.type, epsSource.scheme);
         }
-        const blob = new Blob([svgString!], { type: 'image/svg+xml' });
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.download = `aligned-${name}.svg`;

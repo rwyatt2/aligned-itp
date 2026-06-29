@@ -299,6 +299,53 @@ export async function buildLockupEps(
   return emitEps(width, height, drawables, title)
 }
 
+// ─── SVG emit (y-down, no flip needed) ─────────────────────────────────────
+
+function rgbToHex(rgb: [number, number, number]): string {
+  return (
+    '#' +
+    rgb
+      .map((c) => Math.round(c * 255).toString(16).padStart(2, '0'))
+      .join('')
+  )
+}
+
+function opsToSvgPathData(ops: EpsOp[]): string {
+  return ops
+    .map((o) => {
+      switch (o.t) {
+        case 'm': return `M${fmt(o.x)} ${fmt(o.y)}`
+        case 'l': return `L${fmt(o.x)} ${fmt(o.y)}`
+        case 'c': return `C${fmt(o.x1)} ${fmt(o.y1)} ${fmt(o.x2)} ${fmt(o.y2)} ${fmt(o.x)} ${fmt(o.y)}`
+        case 'z': return 'Z'
+      }
+    })
+    .join(' ')
+}
+
+function emitSvg(width: number, height: number, drawables: Drawable[]): string {
+  const paths = drawables
+    .filter((d) => d.ops.length > 0)
+    .map(
+      (d) =>
+        `  <path fill="${rgbToHex(d.rgb)}" fill-rule="nonzero" d="${opsToSvgPathData(d.ops)}"/>`,
+    )
+    .join('\n')
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${fmt(width)} ${fmt(height)}" width="${fmt(width)}" height="${fmt(height)}">
+${paths}
+</svg>`
+}
+
+export async function buildLockupSvg(
+  kind: LockupKind,
+  scheme: LockupColorScheme,
+): Promise<string> {
+  const fonts = await loadGeistFonts()
+  const { drawables, width, height } = lockupDrawables(kind, scheme, fonts)
+  return emitSvg(width, height, drawables)
+}
+
 // ─── Per-card dispatch ──────────────────────────────────────────────────────
 
 export type EpsSource =

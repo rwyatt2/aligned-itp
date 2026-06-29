@@ -14,22 +14,16 @@ import { brandColors, brandGradients } from './colors'
 import { generateAseBlob } from './aseGenerator'
 import {
   buildLogomarkSvg,
-  buildWordmarkSvg,
   buildWordmarkHtml,
-  buildCompactHorizontalSvg,
   buildCompactHorizontalHtml,
-  buildCompactStackedSvg,
   buildCompactStackedHtml,
-  buildPrimaryHorizontalSvg,
   buildPrimaryHorizontalHtml,
-  buildDetailedHorizontalSvg,
   buildDetailedHorizontalHtml,
-  buildDetailedStackedSvg,
   buildDetailedStackedHtml,
   LOGOMARK_VARIANTS,
   LOCKUP_COLOR_SCHEMES,
 } from './logoSvgBuilder'
-import { buildLogomarkEps, buildLockupEps } from './epsGenerator'
+import { buildLogomarkEps, buildLockupEps, buildLockupSvg } from './epsGenerator'
 import type { LockupKind } from './lockupSpec'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -328,9 +322,13 @@ export async function generateBrandZip(onProgress?: ProgressCallback): Promise<B
   // ── 4. Logos — Wordmark SVG + PNG + EPS ───────────────────────────────
   report('Building wordmarks…', 20)
   for (const scheme of LOCKUP_COLOR_SCHEMES) {
-    // SVG (foreignObject-based — browser handles text spacing)
-    const svg = buildWordmarkSvg(scheme.textFill, scheme.dividerFill)
-    zip.file(`${ROOT}/01_Logos/Wordmark/SVG/ATP-Wordmark-${scheme.slug}.svg`, svg)
+    // SVG (true vector — text outlined via opentype)
+    try {
+      const svg = await buildLockupSvg('Wordmark', scheme)
+      zip.file(`${ROOT}/01_Logos/Wordmark/SVG/ATP-Wordmark-${scheme.slug}.svg`, svg)
+    } catch {
+      console.warn(`Failed to render SVG for wordmark ${scheme.slug}`)
+    }
 
     // EPS (true vector — text outlined via opentype)
     try {
@@ -356,18 +354,22 @@ export async function generateBrandZip(onProgress?: ProgressCallback): Promise<B
   report('Building lockups…', 25)
 
   const lockupBuilders = [
-    { name: 'CompactHorizontal', svgBuilder: buildCompactHorizontalSvg, htmlBuilder: buildCompactHorizontalHtml },
-    { name: 'CompactStacked', svgBuilder: buildCompactStackedSvg, htmlBuilder: buildCompactStackedHtml },
-    { name: 'PrimaryHorizontal', svgBuilder: buildPrimaryHorizontalSvg, htmlBuilder: buildPrimaryHorizontalHtml },
-    { name: 'DetailedHorizontal', svgBuilder: buildDetailedHorizontalSvg, htmlBuilder: buildDetailedHorizontalHtml },
-    { name: 'DetailedStacked', svgBuilder: buildDetailedStackedSvg, htmlBuilder: buildDetailedStackedHtml },
+    { name: 'CompactHorizontal', htmlBuilder: buildCompactHorizontalHtml },
+    { name: 'CompactStacked', htmlBuilder: buildCompactStackedHtml },
+    { name: 'PrimaryHorizontal', htmlBuilder: buildPrimaryHorizontalHtml },
+    { name: 'DetailedHorizontal', htmlBuilder: buildDetailedHorizontalHtml },
+    { name: 'DetailedStacked', htmlBuilder: buildDetailedStackedHtml },
   ]
 
   for (const lockup of lockupBuilders) {
     for (const scheme of LOCKUP_COLOR_SCHEMES) {
-      // SVG
-      const svg = lockup.svgBuilder(scheme)
-      zip.file(`${ROOT}/01_Logos/Lockups/SVG/ATP-${lockup.name}-${scheme.slug}.svg`, svg)
+      // SVG (true vector — text outlined via opentype)
+      try {
+        const svg = await buildLockupSvg(lockup.name as LockupKind, scheme)
+        zip.file(`${ROOT}/01_Logos/Lockups/SVG/ATP-${lockup.name}-${scheme.slug}.svg`, svg)
+      } catch {
+        console.warn(`Failed to render SVG for lockup ${lockup.name}-${scheme.slug}`)
+      }
 
       // EPS (true vector — text outlined via opentype)
       try {

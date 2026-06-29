@@ -208,48 +208,6 @@ export function buildDetailedStackedHtml(scheme: LockupColorScheme): LockupHtmlR
   return { width: 300, height: 230, html: htmlDoc(detailedStackedInner(scheme)) }
 }
 
-// ─── SVG Lockup Builders (foreignObject) ────────────────────────────────────
-
-function lockupSvgWrap(width: number, height: number, htmlContent: string): string {
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">
-  <foreignObject width="${width}" height="${height}">
-    <div xmlns="http://www.w3.org/1999/xhtml">
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600&amp;display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        div, span { font-family: 'Geist Variable', 'Inter', system-ui, sans-serif; }
-      </style>
-      ${htmlContent}
-    </div>
-  </foreignObject>
-</svg>`
-}
-
-export function buildWordmarkSvg(textFill: string, dividerFill: string): string {
-  return lockupSvgWrap(360, 60, wordmarkInner(textFill, dividerFill))
-}
-
-export function buildCompactHorizontalSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(440, 80, compactHorizontalInner(scheme))
-}
-
-export function buildCompactStackedSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(360, 160, compactStackedInner(scheme))
-}
-
-export function buildPrimaryHorizontalSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(480, 70, primaryHorizontalInner(scheme))
-}
-
-export function buildDetailedHorizontalSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(420, 130, detailedHorizontalInner(scheme))
-}
-
-export function buildDetailedStackedSvg(scheme: LockupColorScheme): string {
-  return lockupSvgWrap(300, 230, detailedStackedInner(scheme))
-}
-
 // ─── Public API ─────────────────────────────────────────────────────────────
 
 export type LockupType_Key = LockupType
