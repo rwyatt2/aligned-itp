@@ -92,7 +92,7 @@ function pipeWordmark(alignedPx: number, subtitlePx: number, alignedMarginTopPx:
     aligned: { fontSizePx: alignedPx, weight: 600, letterSpacingEm: TRACK_TIGHT, lineHeight: 1 },
     alignedMarginTopPx,
     pipe: { fontSizePx: alignedPx, weight: 300, letterSpacingEm: TRACK_NORMAL, lineHeight: 1 },
-    subtitle: { fontSizePx: subtitlePx, weight: 300, letterSpacingEm: TRACK_WIDE, lineHeight: 1.2 },
+    subtitle: { fontSizePx: subtitlePx, weight: 500, letterSpacingEm: TRACK_WIDE, lineHeight: 1.2 },
     subtitleMarginTopPx: 2, // mt-0.5
     subtitleLines: ['Technology', 'Partners'],
   }
