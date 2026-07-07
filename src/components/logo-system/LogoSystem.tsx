@@ -2,13 +2,24 @@ import { useRef, useState, useEffect } from 'react'
 import { motion, useInView, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
 import { Check, X, AlertTriangle, Download } from 'lucide-react'
 import { useDownloadGuard } from '../../context/DownloadGuardContext'
+import { useTheme } from '../../context/ThemeContext'
 import SectionWrapper from '../layout/SectionWrapper'
 import AlignedLogo from '../hero/AlignedLogo'
 import Lockup from './Lockup'
-import { LOCKUP_COLOR_SCHEMES } from '../../lib/logoSvgBuilder'
+import { LOCKUP_COLOR_SCHEMES, type LockupColorScheme } from '../../lib/logoSvgBuilder'
 import type { EpsSource } from '../../lib/epsGenerator'
 
 const DEFAULT_SCHEME = LOCKUP_COLOR_SCHEMES[0]
+
+// Matches the on-page dark-mode lockup appearance (accent mark + white text).
+// Defined locally so the master brand ZIP (which iterates LOCKUP_COLOR_SCHEMES) is unaffected.
+const DARK_SCHEME: LockupColorScheme = {
+  name: 'Default Dark',
+  slug: 'DefaultDark',
+  markFill: '#FF5E20',
+  textFill: '#FFFFFF',
+  dividerFill: '#FF5E20',
+}
 
 interface LogoRuleProps {
   correct: boolean
@@ -105,6 +116,7 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
   const [isDownloading, setIsDownloading] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const { guardDownload } = useDownloadGuard()
+  const { theme } = useTheme()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -124,13 +136,20 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
     const titleNode = cardBottomContainer?.querySelector('.font-bold');
     const name = titleNode?.textContent?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'logo';
 
+    // In dark mode, lockups render with white text on-page; make the vector
+    // exports match by swapping to the dark scheme. Logomark swatches are fixed.
+    const source =
+      epsSource?.kind === 'lockup' && theme === 'dark'
+        ? { ...epsSource, scheme: DARK_SCHEME }
+        : epsSource;
+
     // EPS is true vector — generated from the shared spec, not a DOM snapshot.
     if (type === 'EPS') {
-      if (!epsSource) return;
+      if (!source) return;
       setIsDownloading(true);
       try {
         const { buildEps, epsToBlob } = await import('../../lib/epsGenerator');
-        const eps = await buildEps(epsSource);
+        const eps = await buildEps(source);
         const url = URL.createObjectURL(epsToBlob(eps));
         const link = document.createElement('a');
         link.download = `aligned-${name}.eps`;
@@ -149,16 +168,16 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
 
     // SVG is true vector — generated from the shared spec, not a DOM snapshot.
     if (type === 'SVG') {
-      if (!epsSource) return;
+      if (!source) return;
       setIsDownloading(true);
       try {
         let svgString: string;
-        if (epsSource.kind === 'logomark') {
+        if (source.kind === 'logomark') {
           const { buildLogomarkSvg } = await import('../../lib/logoSvgBuilder');
-          svgString = buildLogomarkSvg(epsSource.fill);
+          svgString = buildLogomarkSvg(source.fill);
         } else {
           const { buildLockupSvg } = await import('../../lib/epsGenerator');
-          svgString = await buildLockupSvg(epsSource.type, epsSource.scheme);
+          svgString = await buildLockupSvg(source.type, source.scheme);
         }
         const blob = new Blob([svgString], { type: 'image/svg+xml' });
         const url = URL.createObjectURL(blob);
