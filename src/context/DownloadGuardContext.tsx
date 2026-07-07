@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Lock, X, Eye, EyeOff } from 'lucide-react'
+import { Lock, X, Eye, EyeOff, SunMoon } from 'lucide-react'
 
 // ─── Change this password to whatever you want ───
 const DOWNLOAD_PASSWORD = 'aligned2026'
@@ -119,11 +119,28 @@ export function DownloadGuardProvider({ children }: { children: ReactNode }) {
                   Download Protected
                 </h3>
                 <p
-                  className="text-xs text-center mb-6"
+                  className="text-xs text-center mb-4"
                   style={{ color: 'var(--text-tertiary)' }}
                 >
                   Enter the access password to download brand assets.
                 </p>
+
+                {/* Light/Dark version reminder */}
+                <div
+                  className="flex items-start gap-2 rounded-xl px-3 py-2.5 mb-6"
+                  style={{
+                    backgroundColor: 'var(--bg-tertiary)',
+                    border: '1px solid var(--border-secondary)',
+                  }}
+                >
+                  <SunMoon size={14} className="shrink-0 mt-px" style={{ color: 'var(--accent)' }} />
+                  <span
+                    className="text-[11px] font-medium leading-relaxed text-left"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
+                    Toggle Light / Dark mode to download the matching version of the logo.
+                  </span>
+                </div>
 
                 {/* Form */}
                 <form onSubmit={handleSubmit}>

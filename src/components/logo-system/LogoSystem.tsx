@@ -1,13 +1,51 @@
 import { useRef, useState, useEffect } from 'react'
 import { motion, useInView, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
-import { Check, X, AlertTriangle, Download } from 'lucide-react'
+import { Check, X, AlertTriangle, Download, Sun, Moon } from 'lucide-react'
 import { useDownloadGuard } from '../../context/DownloadGuardContext'
 import { useTheme } from '../../context/ThemeContext'
 import SectionWrapper from '../layout/SectionWrapper'
 import AlignedLogo from '../hero/AlignedLogo'
 import Lockup from './Lockup'
+import ThemeVersionNote, { THEME_VERSION_NOTE_SHORT } from '../common/ThemeVersionNote'
 import { LOCKUP_COLOR_SCHEMES, type LockupColorScheme } from '../../lib/logoSvgBuilder'
 import type { EpsSource } from '../../lib/epsGenerator'
+
+type VersionMode = 'light' | 'dark'
+
+// Rasterizes a vector lockup SVG (with outlined text) to a PNG/JPG data URL so
+// the exported raster matches the selected light/dark version regardless of the
+// current on-page theme.
+async function svgToRasterDataUrl(
+  svgString: string,
+  type: 'PNG' | 'JPG',
+  bgColor: string,
+  scale = 3,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.max(1, Math.round(img.naturalWidth * scale))
+      canvas.height = Math.max(1, Math.round(img.naturalHeight * scale))
+      const ctx = canvas.getContext('2d')!
+      if (type === 'JPG') {
+        ctx.fillStyle = bgColor
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+      }
+      ctx.scale(scale, scale)
+      ctx.drawImage(img, 0, 0)
+      URL.revokeObjectURL(url)
+      resolve(canvas.toDataURL(type === 'JPG' ? 'image/jpeg' : 'image/png', 1))
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to rasterize lockup SVG'))
+    }
+    img.src = url
+  })
+}
 
 const DEFAULT_SCHEME = LOCKUP_COLOR_SCHEMES[0]
 
@@ -19,6 +57,7 @@ const DARK_SCHEME: LockupColorScheme = {
   markFill: '#FF5E20',
   textFill: '#FFFFFF',
   dividerFill: '#FF5E20',
+  mode: 'dark',
 }
 
 interface LogoRuleProps {
@@ -117,6 +156,8 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
   const containerRef = useRef<HTMLDivElement>(null)
   const { guardDownload } = useDownloadGuard()
   const { theme } = useTheme()
+  const isLockup = epsSource?.kind === 'lockup'
+  const [mode, setMode] = useState<VersionMode>(theme === 'dark' ? 'dark' : 'light')
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -136,11 +177,12 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
     const titleNode = cardBottomContainer?.querySelector('.font-bold');
     const name = titleNode?.textContent?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'logo';
 
-    // In dark mode, lockups render with white text on-page; make the vector
-    // exports match by swapping to the dark scheme. Logomark swatches are fixed.
+    // Lockups honor the explicit Light/Dark selector: dark → white text +
+    // accent mark, light → the card's default (dark text) scheme. Logomark
+    // swatches are a single fixed color, so the selector does not apply.
     const source =
-      epsSource?.kind === 'lockup' && theme === 'dark'
-        ? { ...epsSource, scheme: DARK_SCHEME }
+      epsSource?.kind === 'lockup'
+        ? { ...epsSource, scheme: mode === 'dark' ? DARK_SCHEME : epsSource.scheme }
         : epsSource;
 
     // EPS is true vector — generated from the shared spec, not a DOM snapshot.
@@ -196,6 +238,30 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
       return;
     }
 
+    // PNG / JPG — for lockups, rasterize the vector SVG so the exported file
+    // matches the chosen Light/Dark version even if it differs from the theme
+    // currently shown on-page. Logomark swatches keep the live DOM snapshot.
+    if ((type === 'PNG' || type === 'JPG') && source?.kind === 'lockup') {
+      setIsDownloading(true);
+      try {
+        const { buildLockupSvg } = await import('../../lib/epsGenerator');
+        const svgString = await buildLockupSvg(source.type, source.scheme);
+        const bgColor = mode === 'dark' ? '#0A0A0F' : '#FFFFFF';
+        const dataUrl = await svgToRasterDataUrl(svgString, type, bgColor);
+        const link = document.createElement('a');
+        link.download = `aligned-${name}-${mode}.${type.toLowerCase()}`;
+        link.href = dataUrl;
+        link.click();
+        setDownloaded(true);
+        setTimeout(() => setDownloaded(false), 2000);
+      } catch (err) {
+        console.error('Failed to download lockup image', err);
+      } finally {
+        setIsDownloading(false);
+      }
+      return;
+    }
+
     const targetNode = cardBottomContainer?.previousElementSibling as HTMLElement;
     if (!targetNode) return;
 
@@ -232,7 +298,11 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
   return (
     <div className="relative" ref={containerRef}>
       <button
-        onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen) }}
+        onClick={(e) => {
+          e.stopPropagation()
+          if (!isOpen) setMode(theme === 'dark' ? 'dark' : 'light')
+          setIsOpen(!isOpen)
+        }}
         disabled={isDownloading}
         className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors border focus:outline-none ${isDownloading ? 'opacity-50 cursor-wait' : 'hover:bg-[var(--bg-tertiary)] hover:border-[var(--border-secondary)] border-transparent'}`}
         style={{ color: downloaded ? '#22c55e' : 'var(--text-secondary)', marginTop: '-0.25rem' }}
@@ -247,9 +317,38 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
             initial={{ opacity: 0, y: 5, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.1 } }}
-            className="absolute right-0 bottom-full mb-2 z-50 glass-panel rounded-xl shadow-2xl border border-[var(--border-secondary)] overflow-hidden min-w-[100px] p-1.5 flex flex-col gap-0.5"
+            className="absolute right-0 bottom-full mb-2 z-50 glass-panel rounded-xl shadow-2xl border border-[var(--border-secondary)] overflow-hidden w-44 p-1.5 flex flex-col gap-0.5"
             style={{ backgroundColor: 'var(--bg-panel)' }}
           >
+            {isLockup && (
+              <>
+                <div
+                  className="text-[9px] font-bold uppercase tracking-widest px-1.5 pt-0.5 pb-1"
+                  style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}
+                >
+                  Version
+                </div>
+                <div className="flex gap-1 px-0.5 pb-1">
+                  {(['light', 'dark'] as const).map((m) => (
+                    <button
+                      key={m}
+                      onClick={(e) => { e.stopPropagation(); setMode(m) }}
+                      className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-bold capitalize transition-colors"
+                      style={{
+                        backgroundColor: mode === m ? 'var(--bg-tertiary)' : 'transparent',
+                        color: mode === m ? 'var(--text-primary)' : 'var(--text-secondary)',
+                        border: `1px solid ${mode === m ? 'var(--accent)' : 'var(--border-secondary)'}`,
+                      }}
+                    >
+                      {m === 'light' ? <Sun size={11} /> : <Moon size={11} />}
+                      {m}
+                    </button>
+                  ))}
+                </div>
+                <div className="h-px mx-0.5 my-0.5" style={{ backgroundColor: 'var(--border-secondary)' }} />
+              </>
+            )}
+
             {['SVG', 'PNG', 'JPG', 'EPS'].map(format => (
               <button
                 key={format}
@@ -260,6 +359,13 @@ function CardDownloadButton({ size = 14, epsSource }: { size?: number; epsSource
                 .{format}
               </button>
             ))}
+
+            <div
+              className="text-[9px] font-medium leading-snug px-1.5 pt-1.5 pb-0.5"
+              style={{ color: 'var(--text-tertiary)' }}
+            >
+              {THEME_VERSION_NOTE_SHORT}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -332,6 +438,7 @@ export default function LogoSystem() {
             >
               Aligned Technology Partners
             </h3>
+            <ThemeVersionNote className="mt-6 max-w-md text-left" />
           </div>
         </motion.div>
 

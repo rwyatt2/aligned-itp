@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Lenis from 'lenis'
 import Navbar from './components/layout/Navbar'
@@ -10,7 +10,6 @@ import Typography from './components/typography/Typography'
 import VisualLanguage from './components/visual-language/VisualLanguage'
 import VoiceTone from './components/voice-tone/VoiceTone'
 import Mockups from './components/mockups/Mockups'
-import ClientLanding from './pages/ClientLanding'
 
 function AnimatedDivider() {
   return (
@@ -41,16 +40,6 @@ function AnimatedDivider() {
 }
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'guidelines' | 'landing'>('guidelines')
-
-  const handleViewChange = (view: 'guidelines' | 'landing') => {
-    setCurrentView(view)
-    const basePath = import.meta.env.BASE_URL
-    const suffix = view === 'guidelines' ? '' : `?view=${view}`
-    window.history.pushState({}, '', `${basePath}${suffix}`)
-    window.scrollTo(0, 0)
-  }
-
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -76,28 +65,22 @@ export default function App() {
 
   return (
     <div className="relative font-sans text-base antialiased selection:bg-[var(--accent)] selection:text-white">
-      <Navbar currentView={currentView} onViewChange={handleViewChange} />
+      <Navbar />
 
       <main className="relative z-0">
-        {currentView === 'guidelines' ? (
-          <>
-            <HeroSection />
-            <AnimatedDivider />
-            <LogoSystem />
-            <AnimatedDivider />
-            <ColorPalette />
-            <AnimatedDivider />
-            <Typography />
-            <AnimatedDivider />
-            <VisualLanguage />
-            <AnimatedDivider />
-            <Mockups />
-            <AnimatedDivider />
-            <VoiceTone />
-          </>
-        ) : (
-          <ClientLanding />
-        )}
+        <HeroSection />
+        <AnimatedDivider />
+        <LogoSystem />
+        <AnimatedDivider />
+        <ColorPalette />
+        <AnimatedDivider />
+        <Typography />
+        <AnimatedDivider />
+        <VisualLanguage />
+        <AnimatedDivider />
+        <Mockups />
+        <AnimatedDivider />
+        <VoiceTone />
       </main>
 
       {/* Footer */}

@@ -14,27 +14,14 @@ const guidelineSections = [
   { id: 'voice-tone', label: 'Voice' },
 ]
 
-const landingSections = [
-  { id: 'client-hero', label: 'Home' },
-  { id: 'framework', label: 'Framework' },
-  { id: 'reality', label: 'Reality' },
-  { id: 'partners', label: 'Partners' },
-  { id: 'lead-capture', label: 'Contact' },
-]
-
-interface NavbarProps {
-  currentView?: 'guidelines' | 'landing'
-  onViewChange?: (view: 'guidelines' | 'landing') => void
-}
-
-export default function Navbar({ currentView = 'guidelines', onViewChange }: NavbarProps) {
+export default function Navbar() {
   const { theme, toggleTheme } = useTheme()
   const [activeSection, setActiveSection] = useState('hero')
   const [mobileOpen, setMobileOpen] = useState(false)
   
   const { scrollY } = useScroll()
 
-  const activeSectionsList = currentView === 'guidelines' ? guidelineSections : landingSections
+  const activeSectionsList = guidelineSections
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     // Manage active section
@@ -115,40 +102,40 @@ export default function Navbar({ currentView = 'guidelines', onViewChange }: Nav
 
             {/* Right Controls */}
             <div className="flex items-center gap-2 pr-1">
-              {/* View Toggle */}
-              {onViewChange && (
-                <>
-                  <button
-                    onClick={() => onViewChange(currentView === 'guidelines' ? 'landing' : 'guidelines')}
-                    className="px-3 md:px-4 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] md:border-transparent md:hover:border-[var(--border-secondary)]"
-                    style={{ color: currentView === 'landing' ? 'var(--accent)' : 'var(--text-secondary)' }}
-                  >
-                    <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-mono)' }}>
-                      {currentView === 'guidelines' ? 'Landing Page' : 'Guidelines'}
-                    </span>
-                  </button>
-                </>
-              )}
-
               {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="relative w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-[var(--bg-tertiary)]"
-                style={{ color: 'var(--text-secondary)' }}
-                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={theme}
-                    initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                    exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-                  </motion.div>
-                </AnimatePresence>
-              </button>
+              <div className="relative group">
+                <button
+                  onClick={toggleTheme}
+                  className="relative w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-[var(--bg-tertiary)]"
+                  style={{ color: 'var(--text-secondary)' }}
+                  aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={theme}
+                      initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                      animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                      exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                    </motion.div>
+                  </AnimatePresence>
+                </button>
+
+                {/* Hint: theme controls the downloadable logo version */}
+                <div
+                  className="pointer-events-none absolute top-full right-0 mt-2 w-56 px-3 py-2 rounded-xl text-[11px] font-medium leading-relaxed shadow-lg border opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 z-50"
+                  style={{
+                    backgroundColor: 'var(--bg-panel)',
+                    borderColor: 'var(--border-secondary)',
+                    color: 'var(--text-secondary)',
+                    backdropFilter: 'blur(12px)',
+                  }}
+                >
+                  Switch Light / Dark to preview and download the matching version of the logo.
+                </div>
+              </div>
 
               {/* Master Download */}
               <MasterDownloadButton />

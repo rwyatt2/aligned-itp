@@ -25,23 +25,32 @@ const INLINE_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11
 
 // ─── Logomark Color Definitions ─────────────────────────────────────────────
 
+/**
+ * Which theme a given logo treatment is intended for.
+ * - 'light' → sits on light backgrounds (dark/void ink)
+ * - 'dark'  → sits on dark backgrounds (white / light ink)
+ * - 'both'  → theme-agnostic (accent-based), always included
+ */
+export type LogoVersionMode = 'light' | 'dark' | 'both'
+
 export interface LogomarkVariant {
   name: string
   slug: string
   fill: string
   bgHex: string | null // null = transparent
   bgLabel: string
+  mode: LogoVersionMode
 }
 
 export const LOGOMARK_VARIANTS: LogomarkVariant[] = [
-  { name: 'Kinetic',          slug: 'Kinetic',          fill: '#FF5E20', bgHex: null,      bgLabel: 'Transparent' },
-  { name: 'White',            slug: 'White',            fill: '#FFFFFF', bgHex: '#0A0A0F', bgLabel: 'On Dark' },
-  { name: 'Black',            slug: 'Black',            fill: '#0A0A0F', bgHex: null,      bgLabel: 'On Light' },
-  { name: 'Industrial',       slug: 'Industrial',       fill: '#324458', bgHex: null,      bgLabel: 'Slate' },
-  { name: 'Kinetic Inverse',  slug: 'KineticInverse',   fill: '#FFFFFF', bgHex: '#FF5E20', bgLabel: 'Reversed on Accent' },
-  { name: 'Cool Gray',        slug: 'CoolGray',         fill: '#B0CEE2', bgHex: '#12121A', bgLabel: 'Soft on Dark' },
-  { name: 'Charcoal',         slug: 'Charcoal',         fill: '#2A2A35', bgHex: null,      bgLabel: 'Graphite' },
-  { name: 'Industrial Mono',  slug: 'IndustrialMono',   fill: '#90B6D5', bgHex: '#324458', bgLabel: 'Slate on Slate' },
+  { name: 'Kinetic',          slug: 'Kinetic',          fill: '#FF5E20', bgHex: null,      bgLabel: 'Transparent',          mode: 'both'  },
+  { name: 'White',            slug: 'White',            fill: '#FFFFFF', bgHex: '#0A0A0F', bgLabel: 'On Dark',               mode: 'dark'  },
+  { name: 'Black',            slug: 'Black',            fill: '#0A0A0F', bgHex: null,      bgLabel: 'On Light',              mode: 'light' },
+  { name: 'Industrial',       slug: 'Industrial',       fill: '#324458', bgHex: null,      bgLabel: 'Slate',                 mode: 'light' },
+  { name: 'Kinetic Inverse',  slug: 'KineticInverse',   fill: '#FFFFFF', bgHex: '#FF5E20', bgLabel: 'Reversed on Accent',    mode: 'both'  },
+  { name: 'Cool Gray',        slug: 'CoolGray',         fill: '#B0CEE2', bgHex: '#12121A', bgLabel: 'Soft on Dark',          mode: 'dark'  },
+  { name: 'Charcoal',         slug: 'Charcoal',         fill: '#2A2A35', bgHex: null,      bgLabel: 'Graphite',              mode: 'light' },
+  { name: 'Industrial Mono',  slug: 'IndustrialMono',   fill: '#90B6D5', bgHex: '#324458', bgLabel: 'Slate on Slate',        mode: 'dark'  },
 ]
 
 // ─── Lockup Types ───────────────────────────────────────────────────────────
@@ -60,13 +69,23 @@ export interface LockupColorScheme {
   markFill: string
   textFill: string
   dividerFill: string
+  mode: LogoVersionMode
 }
 
 export const LOCKUP_COLOR_SCHEMES: LockupColorScheme[] = [
-  { name: 'Default',  slug: 'Default', markFill: '#FF5E20', textFill: '#0A0A0F', dividerFill: '#FF5E20' },
-  { name: 'White',    slug: 'White',   markFill: '#FFFFFF', textFill: '#FFFFFF', dividerFill: '#FFFFFF' },
-  { name: 'Black',    slug: 'Black',   markFill: '#0A0A0F', textFill: '#0A0A0F', dividerFill: '#0A0A0F' },
+  { name: 'Default',  slug: 'Default', markFill: '#FF5E20', textFill: '#0A0A0F', dividerFill: '#FF5E20', mode: 'light' },
+  { name: 'White',    slug: 'White',   markFill: '#FFFFFF', textFill: '#FFFFFF', dividerFill: '#FFFFFF', mode: 'dark'  },
+  { name: 'Black',    slug: 'Black',   markFill: '#0A0A0F', textFill: '#0A0A0F', dividerFill: '#0A0A0F', mode: 'light' },
 ]
+
+/** Returns true when an item should be included for the requested export mode. */
+export function matchesVersionMode(
+  itemMode: LogoVersionMode,
+  requested: LogoVersionMode,
+): boolean {
+  if (requested === 'both') return true
+  return itemMode === requested || itemMode === 'both'
+}
 
 // ─── SVG Generator (logomark only) ─────────────────────────────────────────
 

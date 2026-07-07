@@ -20,8 +20,10 @@ import {
   buildPrimaryHorizontalHtml,
   buildDetailedHorizontalHtml,
   buildDetailedStackedHtml,
+  matchesVersionMode,
   LOGOMARK_VARIANTS,
   LOCKUP_COLOR_SCHEMES,
+  type LogoVersionMode,
 } from './logoSvgBuilder'
 import { buildLogomarkEps, buildLockupEps, buildLockupSvg } from './epsGenerator'
 import type { LockupKind } from './lockupSpec'
@@ -50,13 +52,22 @@ const GEIST_WEIGHTS = [
 
 // ─── README Generator ───────────────────────────────────────────────────────
 
-function generateReadme(): string {
+function generateReadme(mode: LogoVersionMode): string {
+  const versionLine =
+    mode === 'both'
+      ? 'This package includes both the Light and Dark versions of the logo.'
+      : mode === 'dark'
+      ? 'This package contains the DARK version of the logo (for dark backgrounds).\nToggle Light mode on the brand site and re-download for the light version.'
+      : 'This package contains the LIGHT version of the logo (for light backgrounds).\nToggle Dark mode on the brand site and re-download for the dark version.'
+
   return `ALIGNED TECHNOLOGY PARTNERS — BRAND ASSETS
 ============================================
 
 This package contains the official brand assets for
 Aligned Technology Partners. These files are organized
 by asset type for easy navigation.
+
+${versionLine}
 
 CONTENTS
 --------
@@ -282,24 +293,31 @@ async function fetchAsBlob(url: string): Promise<Blob> {
 
 // ─── Master ZIP Builder ─────────────────────────────────────────────────────
 
-export async function generateBrandZip(onProgress?: ProgressCallback): Promise<Blob> {
+export async function generateBrandZip(
+  mode: LogoVersionMode = 'both',
+  onProgress?: ProgressCallback,
+): Promise<Blob> {
   const zip = new JSZip()
   const report = (step: string, percent: number) => onProgress?.({ step, percent })
 
+  // Filter logo treatments to the requested light/dark version ('both' = all).
+  const logomarkVariants = LOGOMARK_VARIANTS.filter((v) => matchesVersionMode(v.mode, mode))
+  const lockupSchemes = LOCKUP_COLOR_SCHEMES.filter((s) => matchesVersionMode(s.mode, mode))
+
   // ── 1. README ─────────────────────────────────────────────────────────
   report('Writing README…', 2)
-  zip.file(`${ROOT}/00_README.txt`, generateReadme())
+  zip.file(`${ROOT}/00_README.txt`, generateReadme(mode))
 
   // ── 2. Logos — Logomark SVG ───────────────────────────────────────────
   report('Building logomark SVGs…', 5)
-  for (const variant of LOGOMARK_VARIANTS) {
+  for (const variant of logomarkVariants) {
     const svg = buildLogomarkSvg(variant.fill)
     zip.file(`${ROOT}/01_Logos/Logomark/SVG/ATP-Logomark-${variant.slug}.svg`, svg)
   }
 
   // ── 3. Logos — Logomark PNG (1x and 2x) ──────────────────────────────
   report('Rendering logomark PNGs…', 10)
-  for (const variant of LOGOMARK_VARIANTS) {
+  for (const variant of logomarkVariants) {
     const svg = buildLogomarkSvg(variant.fill)
     try {
       const png1x = await svgStringToPngBlob(svg, 1)
@@ -314,14 +332,14 @@ export async function generateBrandZip(onProgress?: ProgressCallback): Promise<B
 
   // ── 3b. Logos — Logomark EPS (true vector) ───────────────────────────
   report('Building logomark EPS…', 16)
-  for (const variant of LOGOMARK_VARIANTS) {
+  for (const variant of logomarkVariants) {
     const eps = buildLogomarkEps(variant.fill, `Aligned Logomark — ${variant.name}`)
     zip.file(`${ROOT}/01_Logos/Logomark/EPS/ATP-Logomark-${variant.slug}.eps`, eps)
   }
 
   // ── 4. Logos — Wordmark SVG + PNG + EPS ───────────────────────────────
   report('Building wordmarks…', 20)
-  for (const scheme of LOCKUP_COLOR_SCHEMES) {
+  for (const scheme of lockupSchemes) {
     // SVG (true vector — text outlined via opentype)
     try {
       const svg = await buildLockupSvg('Wordmark', scheme)
@@ -362,7 +380,7 @@ export async function generateBrandZip(onProgress?: ProgressCallback): Promise<B
   ]
 
   for (const lockup of lockupBuilders) {
-    for (const scheme of LOCKUP_COLOR_SCHEMES) {
+    for (const scheme of lockupSchemes) {
       // SVG (true vector — text outlined via opentype)
       try {
         const svg = await buildLockupSvg(lockup.name as LockupKind, scheme)
